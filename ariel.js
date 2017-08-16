@@ -83,7 +83,7 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 		if (req.file.mimetype !== "image/jpeg") {
 			return res.status( 422 ).json( {
 				error : 'The uploaded file must be an image'
-			}
+			})
 		}
 
 		var dimensions = sizeOf( req.file.path );
