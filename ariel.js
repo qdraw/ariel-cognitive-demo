@@ -26,10 +26,10 @@ app.post('/init', function(req, res) {
 		if (req.headers.bearer !== undefined) {
 			jsonfile.readFile("docs/config.json", function(err, obj) {
 				if (req.headers.bearer === obj.inittoken) {
-					return res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept").header("Access-Control-Allow-Origin", "*").json(csrftoken);
+					return res.header("Access-Control-Allow-Methods", "POST").header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization").header("Access-Control-Allow-Origin", "*").json(csrftoken);
 				}
 				if (req.headers.bearer !== obj.inittoken) {
-					return res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept").header("Access-Control-Allow-Origin", "*").json(false);
+					return res.header("Access-Control-Allow-Methods", "POST").header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization").header("Access-Control-Allow-Origin", "*").json(false);
 				}
 			})
 		}
