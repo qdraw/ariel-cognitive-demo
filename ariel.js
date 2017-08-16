@@ -6,6 +6,8 @@ var jsonfile    =   require( 'jsonfile' );
 var request    =   require( 'request' );
 var dotenv = require('dotenv').config();
 const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 var bodyParser = require('body-parser')
@@ -35,23 +37,54 @@ app.post('/init', function(req, res) {
 	}, 50);
 });
 
+app.post('/status', function(req, res) {
+	// console.log(req.headers.bearer);
+	// console.log(req.headers.filename);
 
-app.listen(process.env.PORT ||process.env.port || 5045, function () {
+	if (csrftoken === req.headers.bearer) {
+		fs.stat(path.join("uploads",req.headers.filename + ".json"), function(err, stats) {
+			if (err !== null) {
+				return res.json(false);
+			}
+
+			if (err === null) {
+
+				if (Date.now() - stats.atimeMs <= 3000) {
+					jsonfile.readFile(path.join("uploads",req.headers.filename + ".json"), function(err, obj) {
+						if (err) {
+							return res.json(false);
+						}
+						if (err === null) {
+							return res.json(obj);
+						}
+					})
+				}
+				if (Date.now() - stats.atimeMs >= 3001) {
+					return res.json();
+				}
+
+			}
+		});
+
+	}
+	if (csrftoken !== req.headers.bearer) {
+		return res.json(false);
+	}
+});
+
+app.listen(process.env.PORT || process.env.port || 5045, function () {
 	console.log('> http://localhost:5045/')
 })
 
 app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 
-	console.log(req.headers);
-
 	if (csrftoken === req.headers["x-csrf-token"] && req.headers["content-length"] !== undefined) {
 
-		// if ( !req.file.mimetype.startsWith( 'image/' ) ) {
-		// 		return res.status( 422 ).json( {
-		// 			error : 'The uploaded file must be an image'
-		// 		}
-		// 	);
-		// }
+		if (req.file.mimetype !== "image/jpeg") {
+			return res.status( 422 ).json( {
+				error : 'The uploaded file must be an image'
+			}
+		}
 
 		var dimensions = sizeOf( req.file.path );
 
@@ -74,15 +107,14 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 					process.exit(1);
 					return;
 				}
-				parseImage(data);
+				parseImage(data,req.file.path);
 			});
 
 		return res.status( 200 ).send( req.file );
 
 	}
 
-	function parseImage(buffer) {
-		console.log(process.env.ms_emo_api_key);
+	function parseImage(buffer,path) {
 		request({
 			headers: {
 				'Content-Type': 'application/octet-stream',
@@ -94,21 +126,18 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 			encoding: 'binary'
 		}, function (err, res,body) {
 			if (err) {
-				console.error(err);
+				console.error("err> " + err);
 			}
-
 			try {
 				var response = JSON.parse(body);
 				if (response.length >= 1) {
-					console.log(body);
-
+					jsonfile.writeFile(path + ".json", response, function (err) {
+  						console.error(err)
+					})
 				}
 			} catch (e) {}
 		});
 	}
-
-
-
 
 
 	if (csrftoken !== req.headers["x-csrf-token"] || req.headers["content-length"] === undefined) {
