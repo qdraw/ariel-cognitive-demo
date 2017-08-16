@@ -18,15 +18,18 @@ const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 
 app.post('/init', function(req, res) {
+
+	console.log(req.headers.host);
+
 	setTimeout(function(){
 		var success = false;
 		if (req.headers.bearer !== undefined) {
 			jsonfile.readFile("docs/config.json", function(err, obj) {
 				if (req.headers.bearer === obj.inittoken) {
-					return res.json(csrftoken);
+					return res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept").header("Access-Control-Allow-Origin", "*").json(csrftoken);
 				}
 				if (req.headers.bearer !== obj.inittoken) {
-					return res.json(false);
+					return res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept").header("Access-Control-Allow-Origin", "*").json(false);
 				}
 			})
 		}
