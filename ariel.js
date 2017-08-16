@@ -17,7 +17,14 @@ app.use(express.static( __dirname + '/docs'));
 const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT").header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, cache-control, x-csrf-token, filename, Authorization, Bearer").header("Access-Control-Allow-Origin", "*")
+	next();
+});
+
+
 app.post('/init', function(req, res) {
+
 
 	console.log(req.headers.host);
 
@@ -26,10 +33,10 @@ app.post('/init', function(req, res) {
 		if (req.headers.bearer !== undefined) {
 			jsonfile.readFile("docs/config.json", function(err, obj) {
 				if (req.headers.bearer === obj.inittoken) {
-					return res.header("Access-Control-Allow-Methods", "POST").header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization").header("Access-Control-Allow-Origin", "*").json(csrftoken);
+					return res.json(csrftoken);
 				}
 				if (req.headers.bearer !== obj.inittoken) {
-					return res.header("Access-Control-Allow-Methods", "POST").header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization").header("Access-Control-Allow-Origin", "*").json(false);
+					return res.json(false);
 				}
 			})
 		}
