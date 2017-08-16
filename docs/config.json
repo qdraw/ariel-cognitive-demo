@@ -1,4 +1,4 @@
 {
-	"server": "http://localhost:5045/init",
+	"server": "https://ariel-cognitive-demo.azurewebsites.net/init",
 	"inittoken": "o4TLqH8DMeuJxz6FI0PhWicRr63R8Wagbg"
 }
