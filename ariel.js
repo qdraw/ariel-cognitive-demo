@@ -2,22 +2,37 @@ var express   =   require( 'express' );
 var multer    =   require( 'multer' );
 var upload    =   multer( { dest: 'uploads/' } );
 var sizeOf    =   require( 'image-size' );
-// var ejs    =   require( 'ejs' );
+var jsonfile    =   require( 'jsonfile' );
 var request    =   require( 'request' );
 var dotenv = require('dotenv').config();
+const sharp = require('sharp');
 
-const app = express()
+const app = express();
+var bodyParser = require('body-parser')
 
-// app.set('view engine', 'ejs');
-app.use( express.static( __dirname + '/public' ) );
+app.use(express.static( __dirname + '/docs'));
 
-// app.get('/', function(req, res) {
-//     res.render('index.ejs');
-// });
-
+const crypto = require('crypto')
+var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 
 app.post('/init', function(req, res) {
+	setTimeout(function(){
+		var success = false;
+		if (req.headers.bearer !== undefined) {
+			jsonfile.readFile("docs/config.json", function(err, obj) {
+				if (req.headers.bearer === obj.inittoken) {
+					return res.json(csrftoken);
+				}
+				if (req.headers.bearer !== obj.inittoken) {
+					return res.json(false);
+				}
+			})
+		}
+		if (req.headers.bearer === undefined) {
+			return res.json(false);
+		}
 
+	}, 50);
 });
 
 
@@ -27,44 +42,77 @@ app.listen(process.env.PORT ||process.env.port || 5045, function () {
 
 app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 
-	if ( !req.file.mimetype.startsWith( 'image/' ) ) {
-			return res.status( 422 ).json( {
-				error : 'The uploaded file must be an image'
-			}
-		);
+	console.log(req.headers);
+
+	if (csrftoken === req.headers["x-csrf-token"] && req.headers["content-length"] !== undefined) {
+
+		// if ( !req.file.mimetype.startsWith( 'image/' ) ) {
+		// 		return res.status( 422 ).json( {
+		// 			error : 'The uploaded file must be an image'
+		// 		}
+		// 	);
+		// }
+
+		var dimensions = sizeOf( req.file.path );
+
+		if ( ( dimensions.width < 640 ) || ( dimensions.height < 480 ) ) {
+			return res.status( 422 ).json({
+				error : 'The image must be at least 640 x 480px'
+			});
+		}
+
+		var image = sharp(req.file.path);
+		image
+			.withMetadata()
+			.resize(1600,1600)
+			.max()
+			.rotate()
+			.jpeg()
+			.toBuffer(function(err, data, info) {
+				if (err) {
+					console.error(err);
+					process.exit(1);
+					return;
+				}
+				parseImage(data);
+			});
+
+		return res.status( 200 ).send( req.file );
+
 	}
 
-	var dimensions = sizeOf( req.file.path );
+	function parseImage(buffer) {
+		console.log(process.env.ms_emo_api_key);
+		request({
+			headers: {
+				'Content-Type': 'application/octet-stream',
+				'Ocp-Apim-Subscription-Key': process.env.ms_emo_api_key
+			},
+			uri: 'https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
+			body: buffer,
+			method: 'POST',
+			encoding: 'binary'
+		}, function (err, res,body) {
+			if (err) {
+				console.error(err);
+			}
 
-	if ( ( dimensions.width < 640 ) || ( dimensions.height < 480 ) ) {
-		return res.status( 422 ).json({
-			error : 'The image must be at least 640 x 480px'
+			try {
+				var response = JSON.parse(body);
+				if (response.length >= 1) {
+					console.log(body);
+
+				}
+			} catch (e) {}
 		});
 	}
-	console.log(req.file.path);
 
-	// var ext = req.file.mimetype.split("/")
-	// var ext = ext[ext.length-1];
-	// fs.renameSync(req.file.path, req.file.path + "." + ext)
-	// var exporturl = req.file.path + ".jpg";
-	// var image = sharp(req.file.path + "." + ext);
-	// image
-	// 	.withMetadata()
-	// 	.resize(1600,1600)
-	// 	.max()
-	// 	.rotate()
-	// 	.jpeg()
-	// 	.toFile(exporturl, function(err, info) {
-	// 		if (err) {
-	// 			console.error(err);
-	// 			process.exit(1);
-	// 			return;
-	// 		}
-	// 		console.log(req.file.path);
-	// 		parseImage(req.file.path);
-	// 		sendClassify(req.file.path);
-	//
-	// 	});
 
-	return res.status( 200 ).send( req.file );
+
+
+
+	if (csrftoken !== req.headers["x-csrf-token"] || req.headers["content-length"] === undefined) {
+		return res.json({})
+	}
+
 });
