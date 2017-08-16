@@ -5,7 +5,7 @@ var sizeOf    =   require( 'image-size' );
 var jsonfile    =   require( 'jsonfile' );
 var request    =   require( 'request' );
 var dotenv = require('dotenv').config();
-const sharp = require('sharp');
+const Jimp = require('jimp');
 const path = require('path');
 const fs = require('fs');
 
@@ -94,21 +94,15 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 			});
 		}
 
-		var image = sharp(req.file.path);
-		image
-			.withMetadata()
-			.resize(1600,1600)
-			.max()
-			.rotate()
-			.jpeg()
-			.toBuffer(function(err, data, info) {
-				if (err) {
-					console.error(err);
-					process.exit(1);
-					return;
-				}
-				parseImage(data,req.file.path);
-			});
+		Jimp.read(req.file.path, function (err, image) {
+			if (err) throw err;
+			image.scaleToFit( 1800, 1800 )           // resize
+				 .quality(90)                 // set JPEG quality
+				 .exifRotate()
+				 .getBuffer( Jimp.MIME_JPEG, function (err, buffer) {
+					 parseImage(buffer,req.file.path);
+				 });
+		});
 
 		return res.status( 200 ).send( req.file );
 
