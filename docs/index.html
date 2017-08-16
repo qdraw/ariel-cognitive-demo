@@ -36,6 +36,10 @@
 
 		getConfig();
 
+		if (document.querySelectorAll(".fallback > input:nth-child(1)").length >= 1) {
+			document.querySelector(".fallback > input:nth-child(1)").style.display = "none";
+		}
+
 		function getConfig() {
 
 			var xhr = new XMLHttpRequest();

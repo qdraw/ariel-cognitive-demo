@@ -18,15 +18,13 @@ const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 
 app.use(function(req, res, next) {
+	// console.log(req.headers.host);
 	res.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT").header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, cache-control, x-csrf-token, filename, Authorization, Bearer").header("Access-Control-Allow-Origin", "*")
 	next();
 });
 
 
 app.post('/init', function(req, res) {
-
-
-	console.log(req.headers.host);
 
 	setTimeout(function(){
 		var success = false;
@@ -44,7 +42,7 @@ app.post('/init', function(req, res) {
 			return res.json(false);
 		}
 
-	}, 50);
+	}, 10000);
 });
 
 app.post('/status', function(req, res) {
