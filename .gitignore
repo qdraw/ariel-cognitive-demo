@@ -57,3 +57,6 @@ typings/
 # dotenv environment variables file
 .env
 
+z-oud/
+uploads/*
+!uploads/.gitkeep 
