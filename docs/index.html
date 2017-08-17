@@ -134,7 +134,10 @@
 
 				rotateImage(document.querySelector(".dz-image > img:nth-child(1)").src, resp.orientation, function (base64) {
 					document.querySelector(".dz-image > img:nth-child(1)").src = base64;
-				})
+					initD3();
+				});
+
+
 
 			});
 		}
@@ -207,18 +210,22 @@
 		}
 
 
-		// // // TEST
-		var div = document.createElement('div')
-		div.className = "dz-preview dz-processing dz-image-preview dz-success dz-complete";
-		div.innerHTML = '<div class="dz-image"><img data-dz-thumbnail="" alt="2017-08-17 10.38.37.jpg" src="index.png"></div>  <div class="dz-details">    <div class="dz-size"><span data-dz-size=""><strong>0.3</strong> MB</span></div>    <div class="dz-filename"><span data-dz-name="">2017-08-17 10.38.37.jpg</span></div>  </div>  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress="" style="width: 100%;"></span></div>  <div class="dz-error-message"><span data-dz-errormessage=""></span></div>  <div class="dz-success-mark" style="display: none;"> </div>'
-		document.querySelector('#upload-widget').appendChild(div);
-		var dimensions = {height: 1800, width: 1350, type: "jpg" }
-		var response =  [{"faceId":"91cbde9a-58ba-4093-b908-baa4b020d465","faceRectangle":{"top":703,"left":431,"width":549,"height":549},"faceLandmarks":{"pupilLeft":{"x":582.3,"y":852.8},"pupilRight":{"x":838.5,"y":863.7},"noseTip":{"x":702.7,"y":992.1},"mouthLeft":{"x":585.1,"y":1093.7},"mouthRight":{"x":816.4,"y":1112.7},"eyebrowLeftOuter":{"x":480.5,"y":795},"eyebrowLeftInner":{"x":658,"y":799.2},"eyeLeftOuter":{"x":541.7,"y":850.5},"eyeLeftTop":{"x":575.4,"y":837.4},"eyeLeftBottom":{"x":574.9,"y":866},"eyeLeftInner":{"x":619,"y":854.2},"eyebrowRightInner":{"x":769.9,"y":801.1},"eyebrowRightOuter":{"x":928,"y":820.2},"eyeRightInner":{"x":790.7,"y":864.2},"eyeRightTop":{"x":834,"y":848.9},"eyeRightBottom":{"x":832.2,"y":875.4},"eyeRightOuter":{"x":873.7,"y":866.9},"noseRootLeft":{"x":677.5,"y":854.8},"noseRootRight":{"x":742.1,"y":856.8},"noseLeftAlarTop":{"x":643.2,"y":941.7},"noseRightAlarTop":{"x":764.2,"y":941.2},"noseLeftAlarOutTip":{"x":621.8,"y":986.7},"noseRightAlarOutTip":{"x":784,"y":992.3},"upperLipTop":{"x":697.4,"y":1071.3},"upperLipBottom":{"x":698.2,"y":1092.1},"underLipTop":{"x":697,"y":1128},"underLipBottom":{"x":693.9,"y":1157.5}},"faceAttributes":{"smile":0.111,"headPose":{"pitch":0,"roll":2.4,"yaw":1.4},"gender":"male","age":26.1,"facialHair":{"moustache":0.1,"beard":0.2,"sideburns":0},"glasses":"ReadingGlasses","emotion":{"anger":0,"contempt":0,"disgust":0,"fear":0,"happiness":0.111,"neutral":0.766,"sadness":0.123,"surprise":0},"makeup":{"eyeMakeup":false,"lipMakeup":true},"hair":{"bald":0.01,"invisible":false,"hairColor":[{"color":"brown","confidence":1},{"color":"black","confidence":0.8},{"color":"other","confidence":0.28},{"color":"red","confidence":0.13},{"color":"gray","confidence":0.1},{"color":"blond","confidence":0.03}]}}}]
-		showData(response);
+		// // // // TEST
+		// var div = document.createElement('div')
+		// div.className = "dz-preview dz-processing dz-image-preview dz-success dz-complete";
+		// div.innerHTML = '<div class="dz-image"><img data-dz-thumbnail="" alt="2017-08-17 10.38.37.jpg" src="index.png"></div>  <div class="dz-details">    <div class="dz-size"><span data-dz-size=""><strong>0.3</strong> MB</span></div>    <div class="dz-filename"><span data-dz-name="">2017-08-17 10.38.37.jpg</span></div>  </div>  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress="" style="width: 100%;"></span></div>  <div class="dz-error-message"><span data-dz-errormessage=""></span></div>  <div class="dz-success-mark" style="display: none;"> </div>'
+		// document.querySelector('#upload-widget').appendChild(div);
+		// var dimensions = {height: 1800, width: 1350, type: "jpg" }
+		// initD3();
+		// setTimeout(function(){
+		// 	var response =  [{"faceId":"91cbde9a-58ba-4093-b908-baa4b020d465","faceRectangle":{"top":703,"left":431,"width":549,"height":549},"faceLandmarks":{"pupilLeft":{"x":582.3,"y":852.8},"pupilRight":{"x":838.5,"y":863.7},"noseTip":{"x":702.7,"y":992.1},"mouthLeft":{"x":585.1,"y":1093.7},"mouthRight":{"x":816.4,"y":1112.7},"eyebrowLeftOuter":{"x":480.5,"y":795},"eyebrowLeftInner":{"x":658,"y":799.2},"eyeLeftOuter":{"x":541.7,"y":850.5},"eyeLeftTop":{"x":575.4,"y":837.4},"eyeLeftBottom":{"x":574.9,"y":866},"eyeLeftInner":{"x":619,"y":854.2},"eyebrowRightInner":{"x":769.9,"y":801.1},"eyebrowRightOuter":{"x":928,"y":820.2},"eyeRightInner":{"x":790.7,"y":864.2},"eyeRightTop":{"x":834,"y":848.9},"eyeRightBottom":{"x":832.2,"y":875.4},"eyeRightOuter":{"x":873.7,"y":866.9},"noseRootLeft":{"x":677.5,"y":854.8},"noseRootRight":{"x":742.1,"y":856.8},"noseLeftAlarTop":{"x":643.2,"y":941.7},"noseRightAlarTop":{"x":764.2,"y":941.2},"noseLeftAlarOutTip":{"x":621.8,"y":986.7},"noseRightAlarOutTip":{"x":784,"y":992.3},"upperLipTop":{"x":697.4,"y":1071.3},"upperLipBottom":{"x":698.2,"y":1092.1},"underLipTop":{"x":697,"y":1128},"underLipBottom":{"x":693.9,"y":1157.5}},"faceAttributes":{"smile":0.111,"headPose":{"pitch":0,"roll":2.4,"yaw":1.4},"gender":"male","age":26.1,"facialHair":{"moustache":0.1,"beard":0.2,"sideburns":0},"glasses":"ReadingGlasses","emotion":{"anger":0,"contempt":0,"disgust":0,"fear":0,"happiness":0.111,"neutral":0.766,"sadness":0.123,"surprise":0},"makeup":{"eyeMakeup":false,"lipMakeup":true},"hair":{"bald":0.01,"invisible":false,"hairColor":[{"color":"brown","confidence":1},{"color":"black","confidence":0.8},{"color":"other","confidence":0.28},{"color":"red","confidence":0.13},{"color":"gray","confidence":0.1},{"color":"blond","confidence":0.03}]}}}]
+		//
+		// 	showData(response);
+		// }, 2000);
 
 
 
-		function showData(response) {
+		function initD3() {
 			moveUploader();
 			function moveUploader() {
 				document.querySelector("#upload-widget").style.display = "none";
@@ -228,84 +235,153 @@
 				document.querySelector("#image").style.display = "block";
 			}
 
+			// Start D3
 			var svg = d3.select("#image").append("svg")
-				// .attr("width",  document.querySelector('#image img').clientWidth + "px")
-                // .attr("height", document.querySelector('#image img').clientHeight + "px")
 				.attr("preserveAspectRatio", "xMinYMin meet")
 				.attr("viewBox", "0 0 " + dimensions.width + " " + dimensions.height);
 
-			for (var i = 0; i < response.length; i++) {
+				var points = [
+					"pupilLeft",
+					"pupilRight",
+					"mouthLeft",
+					"mouthRight",
+					"noseTip",
+					"underLipTop",
+				]
 
-				rSize = "15"
 
-				var pupilLeft = svg.append("circle")
-					.attr("cx", response[i].faceLandmarks.pupilLeft.x)
-					.attr("cy", response[i].faceLandmarks.pupilLeft.y)
-					.attr("r", rSize)
-					.attr("id", "pupilLeft")
-					.style("fill", "rgba(255,255,255,0.4)");
+				for (var i = 0; i < points.length; i++) {
+					var circle = svg.append("circle")
+						.transition()
+						.attr("id", points[i])
+						.attr("cx", Math.random() * dimensions.width)
+						.attr("cy", Math.random() * dimensions.height)
+						.attr("r", "30")
+						.style("fill", "rgba(255,255,255,0.4)")
+						.on("end", function (d,i) {
+							moveElementsThoughScreen(this.id)
+						});
+				}
 
-				var pupilRight = svg.append("circle")
-					.attr("cx", response[i].faceLandmarks.pupilRight.x)
-					.attr("cy", response[i].faceLandmarks.pupilRight.y)
-					.attr("r", rSize)
-					.attr("id", "pupilRight")
-					.style("fill", "rgba(255,255,255,0.4)");
+				function moveElementsThoughScreen(id) {
+				    d3.select("#" + id).transition().duration(500)
+				        .attr("cx", Math.random() * dimensions.width) // change this to random 2px
+				    	.attr("cy", Math.random() * dimensions.height) // change this to random 2px
+						.attr("r", (Math.random() * 30) + 10)
+						.on("end", function (d) {
+							moveElementsThoughScreen(this.id)
+						});
+				}//e/my
 
-				var mouthLeft = svg.append("circle")
-					.attr("cx", response[i].faceLandmarks.mouthLeft.x)
-					.attr("cy", response[i].faceLandmarks.mouthLeft.y)
-					.attr("r", rSize)
-					.attr("id", "mouthLeft")
-					.style("fill", "rgba(255,255,255,0.4)");
 
-				var mouthRight = svg.append("circle")
-					.attr("cx", response[i].faceLandmarks.mouthRight.x)
-					.attr("cy", response[i].faceLandmarks.mouthRight.y)
-					.attr("r", rSize)
-					.attr("id", "mouthRight")
-					.style("fill", "rgba(255,255,255,0.4)");
+		}
 
-				var noseTip = svg.append("circle")
-					.attr("cx", response[i].faceLandmarks.noseTip.x)
-					.attr("cy", response[i].faceLandmarks.noseTip.y)
-					.attr("r", rSize)
-					.attr("id", "noseTip")
-					.style("fill", "rgba(255,255,255,0.4)");
 
-				var underLipTop = svg.append("circle")
-					.attr("cx", response[i].faceLandmarks.underLipTop.x)
-					.attr("cy", response[i].faceLandmarks.underLipTop.y)
-					.attr("r", rSize)
-					.attr("id", "underLipTop")
-					.style("fill", "rgba(255,255,255,0.4)");
 
-				var pupilLeft = svg.append("circle")
-					.attr("cx", response[i].faceLandmarks.pupilLeft.x)
-					.attr("cy", response[i].faceLandmarks.pupilLeft.y)
-					.attr("r", rSize)
-					.attr("id", "pupilLeft")
-					.style("fill", "rgba(0,255,255,0.9)");
-
-				var pupilRight = svg.append("circle")
-					.attr("cx", response[i].faceLandmarks.pupilRight.x)
-					.attr("cy", response[i].faceLandmarks.pupilRight.y)
-					.attr("r", "15")
-					.style("fill", "rgba(255,0,255,0.4)");
-
-				var square = svg.append("rect")
-					.attr("x", response[i].faceRectangle.left)
-					.attr("y", response[i].faceRectangle.top)
-					.attr("width", response[i].faceRectangle.width)
-					.attr("height", response[i].faceRectangle.height)
-					.attr("transform", "")
-					.attr('fill', "none")
-					.style("stroke-width", "5")
-					.attr('stroke', '#0ff');
-
-			}
+		function showData(response) {
 
 			console.log(response);
+			var svg = d3.select("#image svg");
+
+			var points = [
+				"pupilLeft",
+				"pupilRight",
+				"mouthLeft",
+				"mouthRight",
+				"noseTip",
+				"underLipTop",
+			]
+
+			var rSize = Number(response[0].faceLandmarks.eyeRightOuter.x - response[0].faceLandmarks.eyeRightBottom.x)/4;
+			if (rSize <= 3) rSize = 3;
+
+			for (var j = 0; j < points.length; j++) {
+
+				d3.select("#" + points[j]).transition().duration(500)
+					.attr("r", rSize)
+					.attr("cx", function (d) {
+						return response[0].faceLandmarks[this.id].x
+					})
+					.attr("cy", function (d) {
+						return response[0].faceLandmarks[this.id].y
+					});
+			}
+
+			if (response.length >= 2) {
+
+				for (var i = 1; i < response.length; i++) {
+
+					var rSize = Number(response[i].faceLandmarks.eyeRightOuter.x - response[i].faceLandmarks.eyeRightBottom.x)/4;
+					if (rSize <= 3) rSize = 3;
+
+					for (var j = 0; j < points.length; j++) {
+
+						d3.select("#" + points[j]).transition().duration(500)
+							.attr("r", rSize)
+							.attr("cx", function (d) {
+								return response[0].faceLandmarks[this.id].x
+							})
+							.attr("cy", function (d) {
+								return response[0].faceLandmarks[this.id].y
+							});
+					}
+
+					var square = svg.append("rect")
+						.attr("x", response[i].faceRectangle.left)
+						.attr("y", response[i].faceRectangle.top)
+						.attr("width", response[i].faceRectangle.width)
+						.attr("height", response[i].faceRectangle.height)
+						.attr('fill', "none")
+						.style("stroke-width", rSize)
+						.attr('stroke', '#fff');
+
+
+					// var pupilLeft = svg.append("circle")
+					// 	.attr("cx", response[i].faceLandmarks.pupilLeft.x)
+					// 	.attr("cy", response[i].faceLandmarks.pupilLeft.y)
+					// 	.attr("r", rSize)
+					// 	.attr("class", "pupilLeft")
+					// 	.style("fill", "rgba(255,255,255,0.4)");
+					//
+					// var pupilRight = svg.append("circle")
+					// 	.attr("cx", response[i].faceLandmarks.pupilRight.x)
+					// 	.attr("cy", response[i].faceLandmarks.pupilRight.y)
+					// 	.attr("r", rSize)
+					// 	.attr("class", "pupilRight")
+					// 	.style("fill", "rgba(255,255,255,0.4)");
+					//
+					// var mouthLeft = svg.append("circle")
+					// 	.attr("cx", response[i].faceLandmarks.mouthLeft.x)
+					// 	.attr("cy", response[i].faceLandmarks.mouthLeft.y)
+					// 	.attr("r", rSize)
+					// 	.attr("class", "mouthLeft")
+					// 	.style("fill", "rgba(255,255,255,0.4)");
+					//
+					// var mouthRight = svg.append("circle")
+					// 	.attr("cx", response[i].faceLandmarks.mouthRight.x)
+					// 	.attr("cy", response[i].faceLandmarks.mouthRight.y)
+					// 	.attr("r", rSize)
+					// 	.attr("class", "mouthRight")
+					// 	.style("fill", "rgba(255,255,255,0.4)");
+					//
+					// var noseTip = svg.append("circle")
+					// 	.attr("cx", response[i].faceLandmarks.noseTip.x)
+					// 	.attr("cy", response[i].faceLandmarks.noseTip.y)
+					// 	.attr("r", rSize)
+					// 	.attr("class", "noseTip")
+					// 	.style("fill", "rgba(255,255,255,0.4)");
+					//
+					// var underLipTop = svg.append("circle")
+					// 	.attr("cx", response[i].faceLandmarks.underLipTop.x)
+					// 	.attr("cy", response[i].faceLandmarks.underLipTop.y)
+					// 	.attr("r", rSize)
+					// 	.attr("class", "underLipTop")
+					// 	.style("fill", "rgba(255,255,255,0.7)");
+
+
+
+				}
+			}
 
 		}
 
