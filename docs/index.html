@@ -27,7 +27,11 @@
 		</div>
 	</form>
 
+	<div id="image"></div>
+
 	<script type="text/javascript" src="js/dropzone.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+
 	<script type="text/javascript">
 
 	Dropzone.autoDiscover = false;
@@ -39,6 +43,8 @@
 		if (document.querySelectorAll(".fallback > input:nth-child(1)").length >= 1) {
 			document.querySelector(".fallback > input:nth-child(1)").style.display = "none";
 		}
+
+		var dimensions = [];
 
 		function getConfig() {
 
@@ -83,6 +89,8 @@
 				paramName: 'file',
 				maxFilesize: 3, // MB
 				maxFiles: 1,
+				thumbnailWidth: 1000,
+				thumbnailHeight: null,
 				dictDefaultMessage: 'Drag an image here to upload, or click to select one',
 				headers: {
 					'x-csrf-token': document.querySelectorAll('meta[name=csrf-token]')[0].getAttributeNode('content').value,
@@ -96,16 +104,17 @@
 				}
 			});
 			uploader.on('addedfile', function( file){
-				// console.log(file);
+				console.log(file);
 				// start upload
 			});
 
-			uploader.on("sending", function(file, xhr, formData) {
-				formData.append("bearer", file.height);
-				formData.append("width", file.width);
-			});
+			// uploader.on("sending", function(file, xhr, formData) {
+			// 	// formData.append("bearer", file.height);
+			// 	// formData.append("width", file.width);
+			// });
 
-			uploader.on('thumbnail', function(file) {
+			uploader.on('thumbnail', function(file, dataUrl) {
+				// console.log(dataUrl);
 				if ( file.width < 640 || file.height < 480 ) {
 					file.rejectDimensions();
 				}
@@ -115,7 +124,17 @@
 			});
 
 			uploader.on('success', function( file, resp ){
+
+				dimensions = resp.dimensions;
+
 				waitForCognitive(resp.filename);
+
+				document.querySelector(".dz-success-mark").style.display = "none";
+
+				rotateImage(document.querySelector(".dz-image > img:nth-child(1)").src, resp.orientation, function (base64) {
+					document.querySelector(".dz-image > img:nth-child(1)").src = base64;
+				})
+
 			});
 		}
 
@@ -126,15 +145,149 @@
 				xhr.setRequestHeader("bearer", document.querySelectorAll('meta[name=csrf-token]')[0].getAttributeNode('content').value);
 				xhr.setRequestHeader("filename", hash);
 				xhr.onload = function () {
+
 					if (xhr.responseText !== "false") {
 						clearInterval(intervalForCognitive);
-						console.log(xhr.responseText);
+
+						try {
+							response = JSON.parse(xhr.responseText)
+						} catch (e) {
+							response = "false"
+						}
+
+						if (response !== "false") {
+							showData(response);
+						}
 					}
 				};
 				xhr.send(null);
 
-			}, 1000);
+			}, 1234);
 		}
+
+		function rotateImage(srcBase64, srcOrientation, callback) {
+			var img = new Image();
+
+	  		img.onload = function() {
+				var width = img.width,
+				height = img.height,
+				canvas = document.createElement('canvas'),
+				ctx = canvas.getContext("2d");
+
+				// set proper canvas dimensions before transform & export
+				if (4 < srcOrientation && srcOrientation < 9) {
+					canvas.width = height;
+					canvas.height = width;
+				} else {
+					canvas.width = width;
+					canvas.height = height;
+				}
+
+				// transform context before drawing image
+				switch (srcOrientation) {
+					case 2: ctx.transform(-1, 0, 0, 1, width, 0); break;
+					case 3: ctx.transform(-1, 0, 0, -1, width, height ); break;
+					case 4: ctx.transform(1, 0, 0, -1, 0, height ); break;
+					case 5: ctx.transform(0, 1, 1, 0, 0, 0); break;
+					case 6: ctx.transform(0, 1, -1, 0, height , 0); break;
+					case 7: ctx.transform(0, -1, -1, 0, height , width); break;
+					case 8: ctx.transform(0, -1, 1, 0, 0, width); break;
+					default: break;
+				}
+
+				// draw image
+				ctx.drawImage(img, 0, 0);
+
+				// export base64
+				callback(canvas.toDataURL());
+			};
+
+			img.src = srcBase64;
+		}
+
+
+		// // TEST
+		var div = document.createElement('div')
+		div.className = "dz-preview dz-processing dz-image-preview dz-success dz-complete";
+		div.innerHTML = '<div class="dz-image"><img data-dz-thumbnail="" alt="2017-08-17 10.38.37.jpg" src="index.png"></div>  <div class="dz-details">    <div class="dz-size"><span data-dz-size=""><strong>0.3</strong> MB</span></div>    <div class="dz-filename"><span data-dz-name="">2017-08-17 10.38.37.jpg</span></div>  </div>  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress="" style="width: 100%;"></span></div>  <div class="dz-error-message"><span data-dz-errormessage=""></span></div>  <div class="dz-success-mark" style="display: none;"> </div>'
+		document.querySelector('#upload-widget').appendChild(div);
+		var dimensions = { height: 960, width: 1280, type: "jpg" }
+		var response = [{"faceId":"91cbde9a-58ba-4093-b908-baa4b020d465","faceRectangle":{"top":703,"left":431,"width":549,"height":549},"faceLandmarks":{"pupilLeft":{"x":582.3,"y":852.8},"pupilRight":{"x":838.5,"y":863.7},"noseTip":{"x":702.7,"y":992.1},"mouthLeft":{"x":585.1,"y":1093.7},"mouthRight":{"x":816.4,"y":1112.7},"eyebrowLeftOuter":{"x":480.5,"y":795},"eyebrowLeftInner":{"x":658,"y":799.2},"eyeLeftOuter":{"x":541.7,"y":850.5},"eyeLeftTop":{"x":575.4,"y":837.4},"eyeLeftBottom":{"x":574.9,"y":866},"eyeLeftInner":{"x":619,"y":854.2},"eyebrowRightInner":{"x":769.9,"y":801.1},"eyebrowRightOuter":{"x":928,"y":820.2},"eyeRightInner":{"x":790.7,"y":864.2},"eyeRightTop":{"x":834,"y":848.9},"eyeRightBottom":{"x":832.2,"y":875.4},"eyeRightOuter":{"x":873.7,"y":866.9},"noseRootLeft":{"x":677.5,"y":854.8},"noseRootRight":{"x":742.1,"y":856.8},"noseLeftAlarTop":{"x":643.2,"y":941.7},"noseRightAlarTop":{"x":764.2,"y":941.2},"noseLeftAlarOutTip":{"x":621.8,"y":986.7},"noseRightAlarOutTip":{"x":784,"y":992.3},"upperLipTop":{"x":697.4,"y":1071.3},"upperLipBottom":{"x":698.2,"y":1092.1},"underLipTop":{"x":697,"y":1128},"underLipBottom":{"x":693.9,"y":1157.5}},"faceAttributes":{"smile":0.111,"headPose":{"pitch":0,"roll":2.4,"yaw":1.4},"gender":"male","age":26.1,"facialHair":{"moustache":0.1,"beard":0.2,"sideburns":0},"glasses":"ReadingGlasses","emotion":{"anger":0,"contempt":0,"disgust":0,"fear":0,"happiness":0.111,"neutral":0.766,"sadness":0.123,"surprise":0},"makeup":{"eyeMakeup":false,"lipMakeup":true},"hair":{"bald":0.01,"invisible":false,"hairColor":[{"color":"brown","confidence":1},{"color":"black","confidence":0.8},{"color":"other","confidence":0.28},{"color":"red","confidence":0.13},{"color":"gray","confidence":0.1},{"color":"blond","confidence":0.03}]}}}]
+		showData(response);
+
+
+		d3.select(window).on('resize', resize);
+		function resize() {
+		}
+
+		function map( x,  in_min,  in_max,  out_min,  out_max){
+	      return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+	    }
+
+		function showData(response) {
+			moveUploader();
+			function moveUploader() {
+				document.querySelector("#upload-widget").style.display = "none";
+				var img = document.createElement('img')
+				img.src = document.querySelector(".dz-image > img:nth-child(1)").src
+				document.querySelector('#image').appendChild(img);
+				document.querySelector("#image").style.display = "block";
+			}
+
+			var svg = d3.select("#image").append("svg")
+				.attr("width",  document.querySelector('#image img').clientWidth + "px")
+                .attr("height", document.querySelector('#image img').clientHeight + "px");
+
+
+				// .attr("preserveAspectRatio", "xMinYMin meet")
+				// .attr("viewBox", "0 0 " + 1280 + " " + 960);
+
+			for (var i = 0; i < response.length; i++) {
+				console.log(document.querySelector('#image img').clientWidth);
+
+
+				console.log("response[i].faceLandmarks.pupilRight.x " + response[i].faceLandmarks.pupilRight.x);
+
+				// response[i].faceLandmarks.pupilRight.x = map( response[i].faceLandmarks.pupilRight.x,  0,  1280,  0,  document.querySelector('#image img').clientWidth)
+				// 469
+
+				response[i].faceLandmarks.pupilRight.y = map( response[i].faceLandmarks.pupilRight.y,  0,  960,  0,  document.querySelector('#image img').clientHeight);
+
+
+				response[i].faceRectangle.left = map( response[i].faceRectangle.left,  0,  1280,  0,  960);
+				response[i].faceRectangle.left = map( response[i].faceRectangle.left,  0,  1280,  0,  960);
+
+
+				// var pupilLeft = svg.append("circle")
+				// 	.attr("cx", response[i].faceLandmarks.pupilLeft.x)
+				// 	.attr("cy", response[i].faceLandmarks.pupilLeft.y)
+				// 	.attr("r", "15")
+				// 	.style("fill", "rgba(0,255,255,0.9)");
+
+				var pupilRight = svg.append("circle")
+					.attr("cx", response[i].faceLandmarks.pupilRight.x)
+					.attr("cy", response[i].faceLandmarks.pupilRight.y)
+					.attr("r", "15")
+					.style("fill", "rgba(255,0,255,0.4)");
+
+				var square = svg.append("rect")
+					.attr("x", response[i].faceRectangle.left)
+					.attr("y", response[i].faceRectangle.top)
+					.attr("width", response[i].faceRectangle.width)
+					.attr("height", response[i].faceRectangle.height)
+					.attr("transform", "")
+					.attr('fill', "none")
+					.style("stroke-width", "5")
+					.attr('stroke', '#0ff');
+			}
+			// .attr("width", document.querySelector("#image img").clientWidth + "px").attr("height", document.querySelector("#image img").clientHeight + "px");
+
+			console.log(response);
+
+		}
+
+
+
 
 	});
 

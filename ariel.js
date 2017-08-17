@@ -8,6 +8,7 @@ var dotenv = require('dotenv').config();
 const Jimp = require('jimp');
 const path = require('path');
 const fs = require('fs');
+var ExifImage = require('exif').ExifImage;
 
 const app = express();
 var bodyParser = require('body-parser')
@@ -93,6 +94,7 @@ app.post('/status', function(req, res) {
 
 	}
 	if (csrftoken !== req.headers.bearer) {
+		console.log("csrftoken !== req.headers.bearer");
 		return res.json(false);
 	}
 });
@@ -126,10 +128,14 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 				 .exifRotate()
 				 .getBuffer( Jimp.MIME_JPEG, function (err, buffer) {
 					 parseImage(buffer,req.file.path);
+					 getOrientation(req.file.path,function (Orientation) {
+						 req.file.orientation = Orientation;
+						 req.file.dimensions = dimensions;
+						 return res.status( 200 ).send( req.file );
+					 })
 				 });
 		});
 
-		return res.status( 200 ).send( req.file );
 
 	}
 
@@ -139,7 +145,7 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 				'Content-Type': 'application/octet-stream',
 				'Ocp-Apim-Subscription-Key': process.env.ms_emo_api_key
 			},
-			uri: 'https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
+			uri: 'https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup',
 			body: buffer,
 			method: 'POST',
 			encoding: 'binary'
@@ -151,11 +157,29 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 				var response = JSON.parse(body);
 				if (response.length >= 1) {
 					jsonfile.writeFile(path + ".json", response, function (err) {
-  						console.error(err)
-					})
+						console.error(err)
+					});
 				}
 			} catch (e) {}
 		});
+	}
+
+	function getOrientation(filepath,callback) {
+		try {
+			new ExifImage({ image : filepath }, function (error, exifData) {
+				if (error) {
+					console.log('Error: '+error.message);
+					callback(-2);
+				}
+				if (!error) {
+					// req.file.Orientation = exifData.image.Orientation;
+					callback(exifData.image.Orientation);
+				}
+			});
+		} catch (error) {
+			console.log('Error: ' + error.message);
+			callback(-2);
+		}
 	}
 
 
