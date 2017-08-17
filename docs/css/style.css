@@ -66,8 +66,8 @@ background-color: rgb(28,38,50);
 	position: relative;
 }
 #image img{
-	/*height: 80vh;
-	width: auto;*/
+	height: 80vh;
+	width: auto;
 }
 
 #image svg{
@@ -75,6 +75,6 @@ background-color: rgb(28,38,50);
 	display: inline-block;
 	top: 0px;
 	left: 0px;
-	/*height: 80vh;
-	width: auto;*/
+	height: 80vh;
+	width: auto;
 }
