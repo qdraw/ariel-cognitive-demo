@@ -33,14 +33,17 @@ jsonfile.readFile("docs/config.json", function(err, data) {
 	}
 
 	if (process.env.server !== undefined) {
-		data.inittoken = new Buffer(process.env.server).toString('base64');
-		inittoken = data.inittoken;
+		inittoken = new Buffer(process.env.server).toString('base64');
 	}
-	data.server = process.env.server;
 
-	jsonfile.writeFile("docs/config.json", data, function (err) {
-	  console.error(err)
-	})
+	if (data.inittoken !== inittoken || data.server !== process.env.server) {
+		data.inittoken = inittoken;
+		data.server = process.env.server;
+		jsonfile.writeFile("docs/config.json", data, function (err) {
+		  console.error(err)
+		})
+	}
+
 })
 
 
@@ -60,7 +63,7 @@ app.post('/init', function(req, res) {
 			return res.json(false);
 		}
 
-	}, 100);
+	}, 1);
 });
 
 app.post('/status', function(req, res) {
@@ -68,6 +71,7 @@ app.post('/status', function(req, res) {
 	// console.log(req.headers.filename);
 
 	if (csrftoken === req.headers.bearer) {
+
 		fs.stat(path.join("uploads",req.headers.filename + ".json"), function(err, stats) {
 			if (err !== null) {
 				return res.json(false);
@@ -81,12 +85,14 @@ app.post('/status', function(req, res) {
 							return res.json(false);
 						}
 						if (err === null) {
+							console.log("curl 'http://localhost:5045/status' -H bearer:'" + req.headers.bearer + "' -H 'filename:" + req.headers.filename+"' -X POST");
+
 							return res.json(obj);
 						}
 					})
 				}
 				if (Date.now() - stats.atimeMs >= 3001) {
-					return res.json();
+					return res.json("timeout");
 				}
 
 			}
@@ -131,7 +137,7 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 					 getOrientation(req.file.path,function (Orientation) {
 						 req.file.orientation = Orientation;
 						 req.file.dimensions = sizeOf( buffer );
-						 
+
 						 return res.status( 200 ).send( req.file );
 					 })
 				 });
