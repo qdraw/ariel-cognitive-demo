@@ -56,11 +56,15 @@
 	margin-bottom: 30px;
 }
 
+.footer,
 #emotion,
 #info {
 	margin: 5px;
 	color: white;
 	margin-bottom: 30px;
+}
+.footer {
+	margin-bottom: 0px;
 }
 
 h1,h3{

@@ -2,22 +2,31 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Emotion-dection and Classify - powered by Colours AI</title>
+		<title>Get your Age by artificial intelligence - powered by Colours AI</title>
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/dropzone_basic.css">
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="icon" type="image/png" href="img/favicon.png" />
+
+		<meta name="dcterms.rightsHolder" content="&copy; Colours" />
+		<meta name="dcterms.rights" content="Design" />
+		<meta name="dcterms.dateCopyrighted" content="2017">
+		<meta name="author" content="Dion van Velde" />
+
+		<meta property="og:url" content="https://qdraw.github.io/ariel-cognitive-demo/" />
+		<meta property="og:type" content="article" />
+		<meta property="og:title" content="Get your Age by artificial intelligence " />
+		<meta property="og:description" content="Just by analysing this picture we can say a lot about you. Test your emotion, check how old you are." />
+		<meta property="og:image" content="https://qdraw.github.io/ariel-cognitive-demo/img/loader2.gif" />
+
 		<meta name="csrf-token" content="">
 	</head>
 <body>
 	<div id="header">
 		<img src="img/colours.gif" alt="Colours logo" height="40">
 	</div>
-
-	<!-- <div class="preloader">
-		<img src="img/preloader.svg" width="100px" height="100px">
-	</div> -->
 
 	<h1 id="welcome">Add your photo here</h1>
 	<div id="info"></div>
@@ -31,12 +40,13 @@
 
 	<div id="loader"></div>
 	<div id="image"></div>
-
 	<div id="emotion"></div>
+	<div class="footer">
+		Reload the website to submit a new picture.<br />
+	</div>
 
 	<script type="text/javascript" src="js/dropzone.js"></script>
 	<script src="js/d3.v4.min.js"></script>
-
 	<script src="js/upload-widget.js"></script>
 
   </body>
