@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 	function computersaysno() {
 		document.querySelector("#welcome").innerHTML = "The computer says wait";
 		document.querySelector("#info").innerHTML = "Please wait a few seconds, I'm now booting my Raspberry Pi. When this is done you can test your emotion and check how old you are. ";
+		loaderHelper(1234,"img/loader1.gif");
 		loaderHelper(2000,"img/loader2.gif");
 		loaderHelper(6000,"img/loader3.gif");
 		loaderHelper(10000,"img/loader2.gif");
@@ -87,8 +88,6 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 	function uploadWidget() {
 
-
-
 		var uploader = new Dropzone('#upload-widget', {
 			paramName: 'file',
 			maxFilesize: 3, // MB
@@ -108,6 +107,10 @@ document.addEventListener("DOMContentLoaded", function(event){
 			}
 		});
 		uploader.on('addedfile', function( file){
+
+			document.querySelector("#welcome").innerHTML = "We are sending it to us";
+			document.querySelector("#info").innerHTML = "";
+
 			console.log(file);
 			// start upload
 		});
@@ -130,7 +133,6 @@ document.addEventListener("DOMContentLoaded", function(event){
 		uploader.on('success', function( file, resp ){
 
 			dimensions = resp.dimensions;
-			console.log(dimensions);
 
 			waitForCognitive(resp.filename);
 
@@ -141,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 				initD3();
 			});
 
-
+			document.querySelector("#welcome").innerHTML = "Get ready!";
 
 		});
 	}
@@ -220,12 +222,16 @@ document.addEventListener("DOMContentLoaded", function(event){
 	// div.innerHTML = '<div class="dz-image"><img data-dz-thumbnail="" alt="2017-08-17 10.38.37.jpg" src="index.png"></div>  <div class="dz-details">    <div class="dz-size"><span data-dz-size=""><strong>0.3</strong> MB</span></div>    <div class="dz-filename"><span data-dz-name="">2017-08-17 10.38.37.jpg</span></div>  </div>  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress="" style="width: 100%;"></span></div>  <div class="dz-error-message"><span data-dz-errormessage=""></span></div>  <div class="dz-success-mark" style="display: none;"> </div>'
 	// document.querySelector('#upload-widget').appendChild(div);
 	// var dimensions = {height: 1800, width: 1350, type: "jpg" }
+	// document.querySelector("#upload-widget").style.height = "0px";
+	//
 	// initD3();
 	// setTimeout(function(){
 	// 	var response =  [{"faceId":"91cbde9a-58ba-4093-b908-baa4b020d465","faceRectangle":{"top":703,"left":431,"width":549,"height":549},"faceLandmarks":{"pupilLeft":{"x":582.3,"y":852.8},"pupilRight":{"x":838.5,"y":863.7},"noseTip":{"x":702.7,"y":992.1},"mouthLeft":{"x":585.1,"y":1093.7},"mouthRight":{"x":816.4,"y":1112.7},"eyebrowLeftOuter":{"x":480.5,"y":795},"eyebrowLeftInner":{"x":658,"y":799.2},"eyeLeftOuter":{"x":541.7,"y":850.5},"eyeLeftTop":{"x":575.4,"y":837.4},"eyeLeftBottom":{"x":574.9,"y":866},"eyeLeftInner":{"x":619,"y":854.2},"eyebrowRightInner":{"x":769.9,"y":801.1},"eyebrowRightOuter":{"x":928,"y":820.2},"eyeRightInner":{"x":790.7,"y":864.2},"eyeRightTop":{"x":834,"y":848.9},"eyeRightBottom":{"x":832.2,"y":875.4},"eyeRightOuter":{"x":873.7,"y":866.9},"noseRootLeft":{"x":677.5,"y":854.8},"noseRootRight":{"x":742.1,"y":856.8},"noseLeftAlarTop":{"x":643.2,"y":941.7},"noseRightAlarTop":{"x":764.2,"y":941.2},"noseLeftAlarOutTip":{"x":621.8,"y":986.7},"noseRightAlarOutTip":{"x":784,"y":992.3},"upperLipTop":{"x":697.4,"y":1071.3},"upperLipBottom":{"x":698.2,"y":1092.1},"underLipTop":{"x":697,"y":1128},"underLipBottom":{"x":693.9,"y":1157.5}},"faceAttributes":{"smile":0.111,"headPose":{"pitch":0,"roll":2.4,"yaw":1.4},"gender":"male","age":26.1,"facialHair":{"moustache":0.1,"beard":0.2,"sideburns":0},"glasses":"ReadingGlasses","emotion":{"anger":0,"contempt":0,"disgust":0,"fear":0,"happiness":0.111,"neutral":0.766,"sadness":0.123,"surprise":0},"makeup":{"eyeMakeup":false,"lipMakeup":true},"hair":{"bald":0.01,"invisible":false,"hairColor":[{"color":"brown","confidence":1},{"color":"black","confidence":0.8},{"color":"other","confidence":0.28},{"color":"red","confidence":0.13},{"color":"gray","confidence":0.1},{"color":"blond","confidence":0.03}]}}}]
 	//
 	// 	showData(response);
 	// }, 2000);
+	//
+	// // end TESTUNG
 
 
 
@@ -261,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 					.attr("cx", Math.random() * dimensions.width)
 					.attr("cy", Math.random() * dimensions.height)
 					.attr("r", "30")
-					.style("fill", "rgba(255,255,255,0.4)")
+					.style("fill", "rgba(255,255,255,0.8)")
 					.on("end", function (d,i) {
 						moveElementsThoughScreen(this.id)
 					});
@@ -277,15 +283,38 @@ document.addEventListener("DOMContentLoaded", function(event){
 					});
 			}//e/my
 
+			var square = svg.append("rect")
+				.transition()
+				.attr("id", "facerect")
+				.attr("x", (Math.random() * dimensions.width) )
+				.attr("y", (Math.random() * dimensions.width))
+				.attr("width", (Math.random() * dimensions.width))
+				.attr("height", (Math.random() * dimensions.width) )
+				.attr('fill', "none")
+				.style("stroke-width", ((Math.random() * 30) + 2) )
+				.attr('stroke', '#fff')
+				.on("end", function (d) {
+					moveRectThoughScreen(this.id)
+				});
+
+				function moveRectThoughScreen(id) {
+				    d3.select("#" + id).transition().duration(500)
+						.attr("x", (Math.random() * dimensions.width) )
+						.attr("y", (Math.random() * dimensions.width))
+						.attr("width", (Math.random() * dimensions.width))
+						.attr("height", (Math.random() * dimensions.width) )
+						.style("stroke-width", ((Math.random() * 30) + 2) )
+						.on("end", function (d) {
+							moveRectThoughScreen(this.id)
+						});
+				}//e/my
+
 
 	}
 
 
 
 	function showData(response) {
-
-		console.log(response);
-		var svg = d3.select("#image svg");
 
 		var points = [
 			"pupilLeft",
@@ -296,20 +325,50 @@ document.addEventListener("DOMContentLoaded", function(event){
 			"underLipTop",
 		]
 
-		var rSize = Number(response[0].faceLandmarks.eyeRightOuter.x - response[0].faceLandmarks.eyeRightBottom.x)/4;
-		if (rSize <= 3) rSize = 3;
 
-		for (var j = 0; j < points.length; j++) {
+		if (response.length === 0) {
 
-			d3.select("#" + points[j]).transition().duration(500)
-				.attr("r", rSize)
-				.attr("cx", function (d) {
-					return response[0].faceLandmarks[this.id].x
-				})
-				.attr("cy", function (d) {
-					return response[0].faceLandmarks[this.id].y
-				});
+			for (var j = 0; j < points.length; j++) {
+				d3.select("#" + points[j]).transition().duration(500)
+					.attr("r", 0)
+			}
+			d3.select("#facerect").transition().duration(500)
+				.style("stroke-width", 0)
+
 		}
+
+
+		if (response.length >= 1) {
+
+			var svg = d3.select("#image svg");
+
+
+			var rSize = Number(response[0].faceLandmarks.eyeRightOuter.x - response[0].faceLandmarks.eyeRightBottom.x)/4;
+			if (rSize <= 3) rSize = 3;
+
+			for (var j = 0; j < points.length; j++) {
+
+				d3.select("#" + points[j]).transition().duration(500)
+					.attr("r", rSize)
+					.attr("cx", function (d) {
+						return response[0].faceLandmarks[this.id].x
+					})
+					.attr("cy", function (d) {
+						return response[0].faceLandmarks[this.id].y
+					});
+			}
+
+			d3.select("#facerect").transition().duration(500)
+				.attr("x", response[0].faceRectangle.left)
+				.attr("y", response[0].faceRectangle.top)
+				.attr("width", response[0].faceRectangle.width)
+				.attr("height", response[0].faceRectangle.height)
+				.attr('fill', "none")
+				.style("stroke-width", rSize)
+				.attr('stroke', '#fff');
+
+		}
+
 
 		if (response.length >= 2) {
 
@@ -338,51 +397,6 @@ document.addEventListener("DOMContentLoaded", function(event){
 					.attr('fill', "none")
 					.style("stroke-width", rSize)
 					.attr('stroke', '#fff');
-
-
-				// var pupilLeft = svg.append("circle")
-				// 	.attr("cx", response[i].faceLandmarks.pupilLeft.x)
-				// 	.attr("cy", response[i].faceLandmarks.pupilLeft.y)
-				// 	.attr("r", rSize)
-				// 	.attr("class", "pupilLeft")
-				// 	.style("fill", "rgba(255,255,255,0.4)");
-				//
-				// var pupilRight = svg.append("circle")
-				// 	.attr("cx", response[i].faceLandmarks.pupilRight.x)
-				// 	.attr("cy", response[i].faceLandmarks.pupilRight.y)
-				// 	.attr("r", rSize)
-				// 	.attr("class", "pupilRight")
-				// 	.style("fill", "rgba(255,255,255,0.4)");
-				//
-				// var mouthLeft = svg.append("circle")
-				// 	.attr("cx", response[i].faceLandmarks.mouthLeft.x)
-				// 	.attr("cy", response[i].faceLandmarks.mouthLeft.y)
-				// 	.attr("r", rSize)
-				// 	.attr("class", "mouthLeft")
-				// 	.style("fill", "rgba(255,255,255,0.4)");
-				//
-				// var mouthRight = svg.append("circle")
-				// 	.attr("cx", response[i].faceLandmarks.mouthRight.x)
-				// 	.attr("cy", response[i].faceLandmarks.mouthRight.y)
-				// 	.attr("r", rSize)
-				// 	.attr("class", "mouthRight")
-				// 	.style("fill", "rgba(255,255,255,0.4)");
-				//
-				// var noseTip = svg.append("circle")
-				// 	.attr("cx", response[i].faceLandmarks.noseTip.x)
-				// 	.attr("cy", response[i].faceLandmarks.noseTip.y)
-				// 	.attr("r", rSize)
-				// 	.attr("class", "noseTip")
-				// 	.style("fill", "rgba(255,255,255,0.4)");
-				//
-				// var underLipTop = svg.append("circle")
-				// 	.attr("cx", response[i].faceLandmarks.underLipTop.x)
-				// 	.attr("cy", response[i].faceLandmarks.underLipTop.y)
-				// 	.attr("r", rSize)
-				// 	.attr("class", "underLipTop")
-				// 	.style("fill", "rgba(255,255,255,0.7)");
-
-
 
 			}
 		}
