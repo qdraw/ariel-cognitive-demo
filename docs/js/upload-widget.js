@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 		}
 		document.querySelector("#loader").style.display = "none";
 		document.querySelector("#welcome").innerHTML = "Add your photo here";
-		document.querySelector("#info").innerHTML = "Just by analysing this picture we can say a lot about you. Test your emotion, check how old you are. ";
+		document.querySelector("#info").innerHTML = "Just by analysing this picture we can say a lot about you. Test your emotion, check how old you are. We don't save the images";
 
 	}
 
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 		var uploader = new Dropzone('#upload-widget', {
 			paramName: 'file',
-			maxFilesize: 3, // MB
+			maxFilesize: 6, // MB
 			maxFiles: 1,
 			thumbnailWidth: 1000,
 			thumbnailHeight: null,
@@ -455,10 +455,18 @@ document.addEventListener("DOMContentLoaded", function(event){
 			document.querySelector("#welcome").innerHTML = "No one here?";
 		}
 		if (response.length === 1) {
-			document.querySelector("#welcome").innerHTML = "Your are " + Math.round(response[0].faceAttributes.age) + " and " + maxEmoji(response)[0];
+			emoji = maxEmoji(response)[0]
+			if (emoji === "happiness") {
+				emoji = "happy"
+			}
+			document.querySelector("#welcome").innerHTML = "Your are " + Math.round(response[0].faceAttributes.age) + " and " + emoji;
 		}
 		if (response.length >= 2) {
-			document.querySelector("#welcome").innerHTML = "You are " +  mode(maxEmoji(response));
+			emoji = mode(maxEmoji(response))
+			if (emoji === "happiness") {
+				emoji = "happy"
+			}
+			document.querySelector("#welcome").innerHTML = "You are " +  emoji;
 		}
 
 	}
