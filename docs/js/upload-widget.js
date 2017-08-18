@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 				if (data !== undefined) {
 					getBackendServer(data.server + "init" ,data.inittoken);
+					computersaysno();
 					document.querySelector("#upload-widget").action = data.server + "upload";
 				}
 
@@ -45,23 +46,48 @@ document.addEventListener("DOMContentLoaded", function(event){
 				isBackendServerReady = true;
 				document.querySelectorAll('meta[name=csrf-token]')[0].getAttributeNode('content').value = JSON.parse(xhr.responseText);
 				uploadWidget();
+				startuploading();
 			}
 		};
 		xhr.send(null);
 	}
 
-	var intervalForBackendServer = setInterval(function(){
-		console.log("SDf");
-		if (isBackendServerReady) {
-			clearInterval(intervalForBackendServer);
-		}
-	}, 1234);
+	function computersaysno() {
+		document.querySelector("#welcome").innerHTML = "The computer says wait";
+		document.querySelector("#info").innerHTML = "Please wait a few seconds, I'm now booting my Raspberry Pi. When this is done you can test your emotion and check how old you are. ";
+		loaderHelper(2000,"img/loader2.gif");
+		loaderHelper(6000,"img/loader3.gif");
+		loaderHelper(10000,"img/loader2.gif");
+	}
 
-	function uploadWidget() {
+	function loaderHelper(time,url) {
+		setTimeout(function(){
+			if (!isBackendServerReady) {
+				document.querySelector("#loader").style.display = "block";
+				var xhr = new XMLHttpRequest();
+				xhr.open('GET', url, true);
+				xhr.onload = function () {
+					document.querySelector("#loader").style.backgroundImage =  "url('" + url +"')"
+				}
+				xhr.send(null);
+			}
 
+		}, time);
+	}
+
+	function startuploading() {
 		if (document.querySelectorAll("#upload-widget").length >= 1) {
 			document.querySelector("#upload-widget").style.display = "block";
 		}
+		document.querySelector("#loader").style.display = "none";
+		document.querySelector("#welcome").innerHTML = "Add your photo here";
+		document.querySelector("#info").innerHTML = "Just by analysing this picture we can say a lot about you. Test your emotion, check how old you are. ";
+
+	}
+
+	function uploadWidget() {
+
+
 
 		var uploader = new Dropzone('#upload-widget', {
 			paramName: 'file',
@@ -69,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 			maxFiles: 1,
 			thumbnailWidth: 1000,
 			thumbnailHeight: null,
-			dictDefaultMessage: 'Drag an image here to upload, or click to select one',
+			dictDefaultMessage: 'Click or drag an image to start',
 			headers: {
 				'x-csrf-token': document.querySelectorAll('meta[name=csrf-token]')[0].getAttributeNode('content').value,
 			},
