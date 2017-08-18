@@ -167,6 +167,8 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 					if (response !== "false") {
 						showData(response);
+						showText(response);
+						showHeader(response);
 					}
 				}
 			};
@@ -229,8 +231,9 @@ document.addEventListener("DOMContentLoaded", function(event){
 	// 	var response =  [{"faceId":"91cbde9a-58ba-4093-b908-baa4b020d465","faceRectangle":{"top":703,"left":431,"width":549,"height":549},"faceLandmarks":{"pupilLeft":{"x":582.3,"y":852.8},"pupilRight":{"x":838.5,"y":863.7},"noseTip":{"x":702.7,"y":992.1},"mouthLeft":{"x":585.1,"y":1093.7},"mouthRight":{"x":816.4,"y":1112.7},"eyebrowLeftOuter":{"x":480.5,"y":795},"eyebrowLeftInner":{"x":658,"y":799.2},"eyeLeftOuter":{"x":541.7,"y":850.5},"eyeLeftTop":{"x":575.4,"y":837.4},"eyeLeftBottom":{"x":574.9,"y":866},"eyeLeftInner":{"x":619,"y":854.2},"eyebrowRightInner":{"x":769.9,"y":801.1},"eyebrowRightOuter":{"x":928,"y":820.2},"eyeRightInner":{"x":790.7,"y":864.2},"eyeRightTop":{"x":834,"y":848.9},"eyeRightBottom":{"x":832.2,"y":875.4},"eyeRightOuter":{"x":873.7,"y":866.9},"noseRootLeft":{"x":677.5,"y":854.8},"noseRootRight":{"x":742.1,"y":856.8},"noseLeftAlarTop":{"x":643.2,"y":941.7},"noseRightAlarTop":{"x":764.2,"y":941.2},"noseLeftAlarOutTip":{"x":621.8,"y":986.7},"noseRightAlarOutTip":{"x":784,"y":992.3},"upperLipTop":{"x":697.4,"y":1071.3},"upperLipBottom":{"x":698.2,"y":1092.1},"underLipTop":{"x":697,"y":1128},"underLipBottom":{"x":693.9,"y":1157.5}},"faceAttributes":{"smile":0.111,"headPose":{"pitch":0,"roll":2.4,"yaw":1.4},"gender":"male","age":26.1,"facialHair":{"moustache":0.1,"beard":0.2,"sideburns":0},"glasses":"ReadingGlasses","emotion":{"anger":0,"contempt":0,"disgust":0,"fear":0,"happiness":0.111,"neutral":0.766,"sadness":0.123,"surprise":0},"makeup":{"eyeMakeup":false,"lipMakeup":true},"hair":{"bald":0.01,"invisible":false,"hairColor":[{"color":"brown","confidence":1},{"color":"black","confidence":0.8},{"color":"other","confidence":0.28},{"color":"red","confidence":0.13},{"color":"gray","confidence":0.1},{"color":"blond","confidence":0.03}]}}}]
 	//
 	// 	showData(response);
+	// showHeader(response);
+	// showText(response)
 	// }, 2000);
-	//
 	// // end TESTUNG
 
 
@@ -420,8 +423,6 @@ document.addEventListener("DOMContentLoaded", function(event){
 					.attr("class", "underLipTop")
 					.style("fill", "rgba(255,255,255,0.7)");
 
-
-
 				var square = svg.append("rect")
 					.attr("x", response[i].faceRectangle.left)
 					.attr("y", response[i].faceRectangle.top)
@@ -432,10 +433,148 @@ document.addEventListener("DOMContentLoaded", function(event){
 					.attr('stroke', '#fff');
 
 			}
+			for (var i = 0; i < response.length; i++) {
+				var person = "(" + Number(i+1) + ") ";
+				var gendertext =  response[i].faceAttributes.gender + ", ";
+				var agetext = "age: " + Math.round(response[i].faceAttributes.age) + "; ";
+
+				var text = svg.append("text")
+					.attr("x", response[i].faceRectangle.left)
+					.attr("y", response[i].faceRectangle.top + response[i].faceRectangle.height  + 25)
+					.style("fill", "white")
+					.style("font-size", "20px")
+					.attr("dy", ".35em")
+					.attr("text-anchor", "left")
+					.text(person + gendertext + agetext);
+			}
+		}
+
+	}
+	function showHeader(response) {
+		if (response.length === 0) {
+			document.querySelector("#welcome").innerHTML = "No one here?";
+		}
+		if (response.length === 1) {
+			document.querySelector("#welcome").innerHTML = "Your are " + Math.round(response[0].faceAttributes.age) + " and " + maxEmoji(response)[0];
+		}
+		if (response.length >= 2) {
+			document.querySelector("#welcome").innerHTML = "You are " +  mode(maxEmoji(response));
 		}
 
 	}
 
+	function showText(response) {
+		document.querySelector("#emotion").innerHTML = "<h3>Emotion</h3><ul></ul>"
+		if (response !== undefined) {
+			var maxEmojiList = maxEmoji(response);
+
+			for (var i = 0; i < response.length; i++) {
+				document.querySelector("#emotion ul").innerHTML += "<li style='list-style-type:none;'><h3 id='person_"+ response[i].faceId + "'> Person (" + Number(i+1) + ") </h3></li>"
+
+				document.querySelector("#emotion ul").innerHTML += "<li> age: " +response[i].faceAttributes.age + "</li>"
+				document.querySelector("#emotion ul").innerHTML += "<li> gender: " +response[i].faceAttributes.gender + "</li>"
+
+				document.querySelector("#emotion ul").innerHTML += "<li> glasses: " +response[i].faceAttributes.glasses + "</li>"
+
+				document.querySelector("#emotion ul").innerHTML += "<li> emotion: " + maxEmojiList[i] +"</li>";
+
+				var emotionContent = "<li> emotion scores:" + "<br />";
+
+				if (response[i].faceAttributes.emotion.anger >= 0.25) {
+					emotionContent += " anger: " + response[i].faceAttributes.emotion.anger;
+				}
+				if (response[i].faceAttributes.emotion.contempt >= 0.25) {
+					emotionContent += " contempt: "  + response[i].faceAttributes.emotion.contempt;
+				}
+				if (response[i].faceAttributes.emotion.disgust >= 0.25) {
+					emotionContent += " disgust: " +  response[i].faceAttributes.emotion.disgust;
+				}
+				if (response[i].faceAttributes.emotion.fear >= 0.25) {
+					emotionContent += " fear: "  + response[i].faceAttributes.emotion.fear;
+				}
+				if (response[i].faceAttributes.emotion.happiness >= 0.25) {
+					emotionContent += " happiness: " +  response[i].faceAttributes.emotion.happiness;
+				}
+
+				emotionContent += " neutral: " +  response[i].faceAttributes.emotion.neutral;
+
+				if (response[i].faceAttributes.emotion.sadness >= 0.25) {
+					emotionContent += " sadness: "  + response[i].faceAttributes.emotion.sadness;
+				}
+				if (response[i].faceAttributes.emotion.surprise >= 0.25) {
+					emotionContent += " surprise: "  + response[i].faceAttributes.emotion.surprise;
+				}
+				emotionContent += "</li>";
+
+				document.querySelector("#emotion ul").innerHTML += emotionContent;
+
+				document.querySelector("#emotion ul").innerHTML += "<li> makeup: eyeMakeup: " + response[i].faceAttributes.makeup.eyeMakeup + " lipMakeup: " + response[i].faceAttributes.makeup.lipMakeup + "</li>"
+
+				if (response[i].faceAttributes.accessories !== undefined) {
+					document.querySelector("#emotion ul").innerHTML += "<li> accessories: " +JSON.stringify(response[i].faceAttributes.accessories) + "</li>"
+				}
+				if (response[i].faceAttributes.exposure !== undefined) {
+					document.querySelector("#emotion ul").innerHTML += "<li> exposure: " +  response[i].faceAttributes.exposure.exposureLevel + ' ' +  response[i].faceAttributes.exposure.value +"</li>";
+				}
+				if (response[i].faceAttributes.occlusion !== undefined) {
+					document.querySelector("#emotion ul").innerHTML += "<li> foreheadOccluded: " +  response[i].faceAttributes.occlusion.foreheadOccluded + " eyeOccluded: " + response[i].faceAttributes.occlusion.eyeOccluded + " mouthOccluded: " + response[i].faceAttributes.occlusion.mouthOccluded +"</li>";
+				}
+				document.querySelector("#emotion ul").innerHTML += "<li> moustache: " +  response[i].faceAttributes.facialHair.moustache +   " beard: " +  response[i].faceAttributes.facialHair.beard +   " sideburns: " +  response[i].faceAttributes.facialHair.sideburns + "</li>";
+
+			}
+		}
+	}
+
+	function mode(arr){
+	    return arr.sort((a,b) =>
+	          arr.filter(v => v===a).length
+	        - arr.filter(v => v===b).length
+	    ).pop();
+	}
+
+	function maxEmoji(response) {
+		var values = [];
+		for (var i = 0; i < response.length; i++) {
+			var emotionType = [];
+			var emotionScore = [];
+
+			emotionType.push("anger");
+			emotionScore.push(response[i].faceAttributes.emotion.anger);
+			emotionType.push("contempt");
+			emotionScore.push(response[i].faceAttributes.emotion.contempt);
+			emotionType.push("disgust");
+			emotionScore.push(response[i].faceAttributes.emotion.disgust);
+			emotionType.push("fear");
+			emotionScore.push(response[i].faceAttributes.emotion.fear);
+			emotionType.push("happiness");
+			emotionScore.push(response[i].faceAttributes.emotion.happiness);
+			emotionType.push("neutral");
+			emotionScore.push(response[i].faceAttributes.emotion.neutral);
+			emotionType.push("sadness");
+			emotionScore.push(response[i].faceAttributes.emotion.sadness);
+			emotionType.push("surprise");
+			emotionScore.push(response[i].faceAttributes.emotion.surprise);
+
+			// console.log(emotionType);
+			// console.log(emotionScore);
+
+			function findIndexOfGreatest(array) {
+				var greatest;
+				var indexOfGreatest;
+				for (var i = 0; i < array.length; i++) {
+					if (!greatest || array[i] > greatest) {
+					greatest = array[i];
+					indexOfGreatest = i;
+					}
+				}
+				return indexOfGreatest;
+			}
+
+			var index = findIndexOfGreatest(emotionScore);
+			values.push(emotionType[index])
+		}
+		return values;
+	}
 
 
 
