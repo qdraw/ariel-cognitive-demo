@@ -162,7 +162,7 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 			}
 			try {
 				var response = JSON.parse(body);
-				if (response.length >= 1) {
+				if (response.length >= 0) {
 					jsonfile.writeFile(path + ".json", response, function (err) {
 						console.error(err)
 					});

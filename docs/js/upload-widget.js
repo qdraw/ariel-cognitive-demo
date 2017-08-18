@@ -350,6 +350,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 				d3.select("#" + points[j]).transition().duration(500)
 					.attr("r", rSize)
+					.style("fill", "rgba(255,255,255,0.8)")
 					.attr("cx", function (d) {
 						return response[0].faceLandmarks[this.id].x
 					})
@@ -377,17 +378,49 @@ document.addEventListener("DOMContentLoaded", function(event){
 				var rSize = Number(response[i].faceLandmarks.eyeRightOuter.x - response[i].faceLandmarks.eyeRightBottom.x)/4;
 				if (rSize <= 3) rSize = 3;
 
-				for (var j = 0; j < points.length; j++) {
+				var pupilLeft = svg.append("circle")
+					.attr("cx", response[i].faceLandmarks.pupilLeft.x)
+					.attr("cy", response[i].faceLandmarks.pupilLeft.y)
+					.attr("r", rSize)
+					.attr("class", "pupilLeft")
+					.style("fill", "rgba(255,255,255,0.4)");
 
-					d3.select("#" + points[j]).transition().duration(500)
-						.attr("r", rSize)
-						.attr("cx", function (d) {
-							return response[0].faceLandmarks[this.id].x
-						})
-						.attr("cy", function (d) {
-							return response[0].faceLandmarks[this.id].y
-						});
-				}
+				var pupilRight = svg.append("circle")
+					.attr("cx", response[i].faceLandmarks.pupilRight.x)
+					.attr("cy", response[i].faceLandmarks.pupilRight.y)
+					.attr("r", rSize)
+					.attr("class", "pupilRight")
+					.style("fill", "rgba(255,255,255,0.4)");
+
+				var mouthLeft = svg.append("circle")
+					.attr("cx", response[i].faceLandmarks.mouthLeft.x)
+					.attr("cy", response[i].faceLandmarks.mouthLeft.y)
+					.attr("r", rSize)
+					.attr("class", "mouthLeft")
+					.style("fill", "rgba(255,255,255,0.4)");
+
+				var mouthRight = svg.append("circle")
+					.attr("cx", response[i].faceLandmarks.mouthRight.x)
+					.attr("cy", response[i].faceLandmarks.mouthRight.y)
+					.attr("r", rSize)
+					.attr("class", "mouthRight")
+					.style("fill", "rgba(255,255,255,0.4)");
+
+				var noseTip = svg.append("circle")
+					.attr("cx", response[i].faceLandmarks.noseTip.x)
+					.attr("cy", response[i].faceLandmarks.noseTip.y)
+					.attr("r", rSize)
+					.attr("class", "noseTip")
+					.style("fill", "rgba(255,255,255,0.4)");
+
+				var underLipTop = svg.append("circle")
+					.attr("cx", response[i].faceLandmarks.underLipTop.x)
+					.attr("cy", response[i].faceLandmarks.underLipTop.y)
+					.attr("r", rSize)
+					.attr("class", "underLipTop")
+					.style("fill", "rgba(255,255,255,0.7)");
+
+
 
 				var square = svg.append("rect")
 					.attr("x", response[i].faceRectangle.left)
