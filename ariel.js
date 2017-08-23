@@ -13,9 +13,6 @@ var ExifImage = require('exif').ExifImage;
 const app = express();
 var bodyParser = require('body-parser')
 
-folder = process.env.folder || "public"
-app.use(express.static( path.join(__dirname, folder)));
-
 const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 var inittoken = undefined;
@@ -65,10 +62,18 @@ fs.stat(path.join(__dirname, folder, "config.json"), function(err, stats) {
 });
 
 app.get('/config.json', function(req, res) {
+	// return res.sendFile(path.join(__dirname, folder, "config.json"));
+
 	jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
-		return res.json(data);
+		data.dynamic = true;
+		res.json(data)
 	})
 });
+
+// serve static content
+folder = process.env.folder || "public"
+app.use(express.static( path.join(__dirname, folder)));
+
 
 app.post('/init', function(req, res) {
 
@@ -128,8 +133,9 @@ app.post('/status', function(req, res) {
 	}
 });
 
-app.listen(process.env.PORT || process.env.port || 5045, function () {
-	console.log('> http://localhost:'+ process.env.PORT || process.env.port || 5045 +'/')
+app.set('port', process.env.PORT || process.env.port || 5045)
+app.listen(app.get('port'), function () {
+  console.log('> http://localhost:' + app.get('port'))
 })
 
 app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
