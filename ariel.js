@@ -41,7 +41,7 @@ jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, dat
 		data.inittoken = inittoken;
 		data.server = process.env.server;
 		jsonfile.writeFile(path.join(__dirname, folder, "config.json"), data, function (err) {
-		  console.error(err)
+			console.error(err)
 		})
 	}
 
