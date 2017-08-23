@@ -67,11 +67,20 @@ fs.stat(path.join(__dirname, folder, "config.json"), function(err, stats) {
 
 app.get('/config', function(req, res) {
 	// return res.sendFile(path.join(__dirname, folder, "config.json"));
+	fs.stat(path.join(__dirname, folder, "config.json"), function(err, stats) {
+		if (err !== null) {
+			res.json({})
+		}
+		if (err === null) {
+			jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
+				data.dynamic = true;
+				res.json(data)
+			})
+		}
 
-	jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
-		data.dynamic = true;
-		res.json(data)
-	})
+	});
+
+
 });
 
 app.post('/init', function(req, res) {
