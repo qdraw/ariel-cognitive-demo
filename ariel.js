@@ -16,7 +16,10 @@ var bodyParser = require('body-parser')
 const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 var inittoken = undefined;
+
+// serve static content
 var folder = process.env.folder || "public"
+app.use(express.static( path.join(__dirname, folder)));
 
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT").header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, cache-control, x-csrf-token, filename, Authorization, Bearer").header("Access-Control-Allow-Origin", "*")
@@ -62,7 +65,7 @@ fs.stat(path.join(__dirname, folder, "config.json"), function(err, stats) {
 
 });
 
-app.get('/config.json', function(req, res) {
+app.get('/config', function(req, res) {
 	// return res.sendFile(path.join(__dirname, folder, "config.json"));
 
 	jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
@@ -70,10 +73,6 @@ app.get('/config.json', function(req, res) {
 		res.json(data)
 	})
 });
-
-// serve static content
-app.use(express.static( path.join(__dirname, folder)));
-
 
 app.post('/init', function(req, res) {
 

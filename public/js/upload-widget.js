@@ -3,7 +3,7 @@ Dropzone.autoDiscover = false;
 
 document.addEventListener("DOMContentLoaded", function(event){
 
-	getConfig();
+	getConfig("config.json");
 
 	if (document.querySelectorAll("#upload-widget").length >= 1) {
 		document.querySelector("#upload-widget").style.display = "none";
@@ -11,16 +11,20 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 	var dimensions = [];
 
-	function getConfig() {
+	function getConfig(url) {
 
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', "config.json", true);
+		xhr.open('GET', url, true);
 		xhr.onload = function () {
 			if (xhr.status === 200 || xhr.status === 304) {
 				try {
 					data = JSON.parse(xhr.responseText);
 				} catch (e) {
 					data = undefined;
+				}
+
+				if (data === undefined) {
+					getConfig("config")
 				}
 
 				if (data !== undefined) {
