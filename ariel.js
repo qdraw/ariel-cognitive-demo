@@ -15,14 +15,12 @@ var bodyParser = require('body-parser')
 
 folder = process.env.folder || "public"
 app.use(express.static( path.join(__dirname, folder)));
-console.log(path.join(__dirname, folder));
 
 const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 var inittoken = undefined;
 
 app.use(function(req, res, next) {
-	// console.log(req.headers.host);
 	res.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT").header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, cache-control, x-csrf-token, filename, Authorization, Bearer").header("Access-Control-Allow-Origin", "*")
 	next();
 });
@@ -41,7 +39,6 @@ fs.stat(path.join(__dirname, folder, "config.json"), function(err, stats) {
 	}
 
 	if (err === null) {
-		console.log(path.join(__dirname, folder, "config.json"));
 		jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
 
 			if (process.env.server === undefined) {
@@ -67,9 +64,11 @@ fs.stat(path.join(__dirname, folder, "config.json"), function(err, stats) {
 
 });
 
-
-
-
+app.get('/config.json', function(req, res) {
+	jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
+		return res.json(data);
+	})
+});
 
 app.post('/init', function(req, res) {
 
@@ -130,7 +129,7 @@ app.post('/status', function(req, res) {
 });
 
 app.listen(process.env.PORT || process.env.port || 5045, function () {
-	console.log('> http://localhost:5045/')
+	console.log('> http://localhost:'+ process.env.PORT || process.env.port || 5045 +'/')
 })
 
 app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
