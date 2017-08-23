@@ -15,6 +15,7 @@ var bodyParser = require('body-parser')
 
 folder = process.env.folder || "public"
 app.use(express.static( path.join(__dirname, folder)));
+console.log(path.join(__dirname, folder));
 
 const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
@@ -26,26 +27,47 @@ app.use(function(req, res, next) {
 	next();
 });
 
-jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
+fs.stat(path.join(__dirname, folder, "config.json"), function(err, stats) {
 
-	if (process.env.server === undefined) {
-		console.error(">>>> please add server in .env");
-		process.env.server = "http://localhost:5045/";
-	}
-
-	if (process.env.server !== undefined) {
-		inittoken = new Buffer(process.env.server).toString('base64');
-	}
-
-	if (data.inittoken !== inittoken || data.server !== process.env.server) {
-		data.inittoken = inittoken;
-		data.server = process.env.server;
+	if (err !== null) {
+		var data = {};
+		data.inittoken = "";
+		data.server = "";
 		jsonfile.writeFile(path.join(__dirname, folder, "config.json"), data, function (err) {
 			console.error(err)
+			console.log("please restart the app");
+			process.exit(1);
 		})
 	}
 
-})
+	if (err === null) {
+		jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
+
+			if (process.env.server === undefined) {
+				console.error(">>>> please add server in .env");
+				process.env.server = "http://localhost:5045/";
+			}
+
+			if (process.env.server !== undefined) {
+				inittoken = new Buffer(process.env.server).toString('base64');
+			}
+
+			if (data.inittoken !== inittoken || data.server !== process.env.server) {
+				data.inittoken = inittoken;
+				data.server = process.env.server;
+				console.log(data.inittoken,data.server);
+				jsonfile.writeFile(path.join(__dirname, folder, "config.json"), data, function (err) {
+					console.error(err)
+				})
+			}
+
+		})
+	}
+
+});
+
+
+
 
 
 app.post('/init', function(req, res) {
