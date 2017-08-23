@@ -3,14 +3,9 @@ Dropzone.autoDiscover = false;
 
 document.addEventListener("DOMContentLoaded", function(event){
 
-	console.log(localStorage.getItem("config"));
-
-	if ( localStorage.getItem("config") === null) {
-		getConfig("config.json");
-	}
-	if ( localStorage.getItem("config") !== null) {
-		getConfig("config");
-	}
+	// Loading alternative config.json file if this one is not there. This is workaround for azure
+	if ( localStorage.getItem("config") === null) getConfig("config.json");
+	if ( localStorage.getItem("config") === "config") getConfig("config");
 
 	if (document.querySelectorAll("#upload-widget").length >= 1) {
 		document.querySelector("#upload-widget").style.display = "none";
@@ -34,14 +29,11 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 			}
 			if (xhr.status === 404) {
-				localStorage.setItem("config", "false");
+				localStorage.setItem("config", "config");
 				location.reload();
 			}
 		};
 		xhr.send(null);
-
-
-
 	}
 
 	var isBackendServerReady = false;
