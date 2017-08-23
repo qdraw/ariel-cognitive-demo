@@ -13,7 +13,8 @@ var ExifImage = require('exif').ExifImage;
 const app = express();
 var bodyParser = require('body-parser')
 
-app.use(express.static( __dirname + '/docs'));
+folder = process.env.folder || "public"
+app.use(express.static( __dirname + '/' + folder));
 
 const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
@@ -25,7 +26,7 @@ app.use(function(req, res, next) {
 	next();
 });
 
-jsonfile.readFile("docs/config.json", function(err, data) {
+jsonfile.readFile(folder + "/config.json", function(err, data) {
 
 	if (process.env.server === undefined) {
 		console.error(">>>> please add server in .env");
@@ -39,7 +40,7 @@ jsonfile.readFile("docs/config.json", function(err, data) {
 	if (data.inittoken !== inittoken || data.server !== process.env.server) {
 		data.inittoken = inittoken;
 		data.server = process.env.server;
-		jsonfile.writeFile("docs/config.json", data, function (err) {
+		jsonfile.writeFile(folder + "/config.json", data, function (err) {
 		  console.error(err)
 		})
 	}
