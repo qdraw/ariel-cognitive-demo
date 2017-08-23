@@ -159,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 		});
 	}
 
+	var isCognitiveReady = false;
 	function waitForCognitive(hash) {
 		var intervalForCognitive = setInterval(function(){
 			var xhr = new XMLHttpRequest();
@@ -169,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 				if (xhr.responseText !== "false") {
 					clearInterval(intervalForCognitive);
+					isCognitiveReady = true;
 
 					try {
 						response = JSON.parse(xhr.responseText)
@@ -293,7 +295,9 @@ document.addEventListener("DOMContentLoaded", function(event){
 			    	.attr("cy", Math.random() * dimensions.height) // change this to random 2px
 					.attr("r", (Math.random() * 30) + 10)
 					.on("end", function (d) {
-						moveElementsThoughScreen(this.id)
+						if (!isCognitiveReady) {
+							moveElementsThoughScreen(this.id)
+						}
 					});
 			}//e/my
 
@@ -319,7 +323,9 @@ document.addEventListener("DOMContentLoaded", function(event){
 						.attr("height", (Math.random() * dimensions.width) )
 						.style("stroke-width", ((Math.random() * 30) + 2) )
 						.on("end", function (d) {
-							moveRectThoughScreen(this.id)
+							if (!isCognitiveReady) {
+								moveRectThoughScreen(this.id)
+							}
 						});
 				}//e/my
 
