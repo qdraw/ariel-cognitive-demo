@@ -41,6 +41,7 @@ fs.stat(path.join(__dirname, folder, "config.json"), function(err, stats) {
 	}
 
 	if (err === null) {
+		console.log(path.join(__dirname, folder, "config.json"));
 		jsonfile.readFile(path.join(__dirname, folder, "config.json"), function(err, data) {
 
 			if (process.env.server === undefined) {
