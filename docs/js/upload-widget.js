@@ -66,7 +66,9 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 	function reloadPage(time) {
 		setTimeout(function(){
-			 location.reload();
+			if (!isBackendServerReady) {
+				location.reload();
+			}
 		}, time);
 	}
 
