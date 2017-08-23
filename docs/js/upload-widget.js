@@ -59,6 +59,15 @@ document.addEventListener("DOMContentLoaded", function(event){
 		loaderHelper(2000,"img/loader2.gif");
 		loaderHelper(6000,"img/loader3.gif");
 		loaderHelper(10000,"img/loader2.gif");
+		loaderHelper(16000,"img/loader3.gif");
+		loaderHelper(20000,"img/loader2.gif");
+		reloadPage(30000);
+	}
+
+	function reloadPage(time) {
+		setTimeout(function(){
+			 location.reload();
+		}, time);
 	}
 
 	function loaderHelper(time,url) {
