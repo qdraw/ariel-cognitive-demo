@@ -1,6 +1,17 @@
 var express   =   require( 'express' );
 var multer    =   require( 'multer' );
-var upload    =   multer( { dest: 'uploads/' } );
+
+var storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, 'uploads/')
+	},
+	filename: function (req, file, cb) {
+		console.log(file);
+		cb(null, new Date().toISOString().slice(0,-5).replace(/[:-]/ig,"").replace(/T/ig,"_") + "_" +Math.floor( Math.random()*10000 ) )
+	}
+})
+
+var upload = multer({ storage: storage })
 var sizeOf    =   require( 'image-size' );
 var jsonfile    =   require( 'jsonfile' );
 var request    =   require( 'request' );
