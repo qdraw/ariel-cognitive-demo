@@ -317,19 +317,19 @@ document.addEventListener("DOMContentLoaded", function(event){
 					moveRectThoughScreen(this.id)
 				});
 
-				function moveRectThoughScreen(id) {
-				    d3.select("#" + id).transition().duration(500)
-						.attr("x", (Math.random() * dimensions.width) )
-						.attr("y", (Math.random() * dimensions.width))
-						.attr("width", (Math.random() * dimensions.width))
-						.attr("height", (Math.random() * dimensions.width) )
-						.style("stroke-width", ((Math.random() * 30) + 2) )
-						.on("end", function (d) {
-							if (!isCognitiveReady) {
-								moveRectThoughScreen(this.id)
-							}
-						});
-				}//e/my
+			function moveRectThoughScreen(id) {
+			    d3.select("#" + id).transition().duration(500)
+					.attr("x", (Math.random() * dimensions.width) )
+					.attr("y", (Math.random() * dimensions.width))
+					.attr("width", (Math.random() * dimensions.width))
+					.attr("height", (Math.random() * dimensions.width) )
+					.style("stroke-width", ((Math.random() * 30) + 2) )
+					.on("end", function (d) {
+						if (!isCognitiveReady) {
+							moveRectThoughScreen(this.id)
+						}
+					});
+			}//e/my
 
 
 	}
