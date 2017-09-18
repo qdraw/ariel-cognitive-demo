@@ -30,9 +30,11 @@ var inittoken = undefined;
 
 // you can remove and ignore this
 if (process.env.DROPBOX_FOLDER !== undefined && process.env.DROPBOX_ACCESSTOKEN !== undefined) {
+	console.log(">- sync enabled");
 	var sync = require( './sync.js' );
 }
 if (process.env.DROPBOX_FOLDER === undefined || process.env.DROPBOX_ACCESSTOKEN === undefined) {
+	console.log(">- sync disabled");
 	var sync = {
 		uploadFile: function() {
 			return {}
