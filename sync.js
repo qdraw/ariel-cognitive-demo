@@ -21,12 +21,15 @@ function uploadFile(inputPath,outputPath) {
 	function run() {
 		var formquery = fs.createReadStream(inputPath);
 		var contentLength = formquery.lenght;
-
+		console.log(outputPath);
+		APIArg = JSON.stringify({"path": outputPath})
+		console.log(APIArg);
+		
 		request({
 			headers: {
 				'Authorization': 'Bearer ' + process.env.DROPBOX_ACCESSTOKEN,
 				'Content-Length': contentLength,
-				'Dropbox-API-Arg': '{"path":"' + outputPath + '"}',
+				'Dropbox-API-Arg': APIArg,
 				'Content-Type': "application/octet-stream"
 			},
 			uri: 'https://content.dropboxapi.com/2/files/upload',
