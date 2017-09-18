@@ -21,10 +21,11 @@ function uploadFile(inputPath,outputPath) {
 	function run() {
 		var formquery = fs.createReadStream(inputPath);
 		var contentLength = formquery.lenght;
-		console.log(outputPath);
+
+		outputPath = outputPath.replace(path.win32.sep,path.posix.sep)
 		APIArg = JSON.stringify({"path": outputPath})
 		console.log(APIArg);
-		
+
 		request({
 			headers: {
 				'Authorization': 'Bearer ' + process.env.DROPBOX_ACCESSTOKEN,
