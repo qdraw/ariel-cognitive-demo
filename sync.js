@@ -23,8 +23,8 @@ function uploadFile(inputPath,outputPath) {
 		var contentLength = formquery.lenght;
 
 		outputPath = outputPath.replace(path.win32.sep,path.posix.sep)
+		outputPath = outputPath.replace("uploads/","")
 		APIArg = JSON.stringify({"path": outputPath})
-		console.log(APIArg);
 
 		request({
 			headers: {
