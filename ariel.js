@@ -28,6 +28,20 @@ const crypto = require('crypto')
 var csrftoken = crypto.randomBytes(48).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 var inittoken = undefined;
 
+// you can remove and ignore this
+if (process.env.DROPBOX_FOLDER !== undefined && process.env.DROPBOX_ACCESSTOKEN !== undefined) {
+	var sync = require( './sync.js' );
+}
+if (process.env.DROPBOX_FOLDER === undefined || process.env.DROPBOX_ACCESSTOKEN === undefined) {
+	var sync = {
+		uploadFile: function() {
+			return {}
+		}
+	}
+}
+
+
+
 // serve static content
 var folder = process.env.folder || "public"
 app.use(express.static( path.join(__dirname, folder)));
@@ -154,7 +168,7 @@ app.post('/status', function(req, res) {
 
 app.set('port', process.env.PORT || process.env.port || 5045)
 app.listen(app.get('port'), function () {
-  console.log('> http://localhost:' + app.get('port'))
+	console.log('> http://localhost:' + app.get('port'))
 })
 
 app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
@@ -181,11 +195,13 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 				 .quality(90)                 // set JPEG quality
 				 .exifRotate()
 				 .getBuffer( Jimp.MIME_JPEG, function (err, buffer) {
+					 // sync module you can disable this
+					 sync.uploadFile(req.file.path, process.env.DROPBOX_FOLDER + req.file.path.replace("uploads/","") + ".jpg")
+
 					 parseImage(buffer,req.file.path);
 					 getOrientation(req.file.path,function (Orientation) {
 						 req.file.orientation = Orientation;
 						 req.file.dimensions = sizeOf( buffer );
-
 						 return res.status( 200 ).send( req.file );
 					 })
 				 });
@@ -213,6 +229,7 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 				if (response.length >= 0) {
 					jsonfile.writeFile(path + ".json", response, function (err) {
 						console.error(err)
+						sync.uploadFile(path + ".json", process.env.DROPBOX_FOLDER + path.replace("uploads/","") + ".json")
 					});
 				}
 			} catch (e) {}
