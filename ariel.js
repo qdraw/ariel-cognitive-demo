@@ -155,8 +155,7 @@ app.post('/status', function(req, res) {
 							return res.json(false);
 						}
 						if (err === null) {
-							console.log("curl 'http://localhost:5045/status' -H bearer:'" + req.headers.bearer + "' -H 'filename:" + req.headers.filename+"' -X POST");
-
+							// console.log("curl 'http://localhost:5045/status' -H bearer:'" + req.headers.bearer + "' -H 'filename:" + req.headers.filename+"' -X POST");
 							return res.json(obj);
 						}
 					})
