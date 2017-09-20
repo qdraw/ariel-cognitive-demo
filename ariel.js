@@ -105,9 +105,17 @@ app.get('/config', function(req, res) {
 		}
 
 	});
-
-
 });
+
+if (process.env.DASHBOARD !== undefined) {
+	var dashboardAPI = require('./dashboard/api.js');
+	dashboardAPI.api(app)
+	app.get("/" + process.env.DASHBOARD + "/", function(req, res) {
+		res.sendFile(path.join(__dirname,"dashboard","index.html"))
+	});
+}
+
+
 
 app.post('/init', function(req, res) {
 
@@ -230,7 +238,7 @@ app.post( '/upload', upload.single( 'file' ), function( req, res, next ) {
 				if (response.length >= 0) {
 					jsonfile.writeFile(path + ".json", response, function (err) {
 						console.error(err)
-						sync.uploadFile(path + ".json", process.env.DROPBOX_FOLDER + path.replace("uploads/","") + ".json")
+						sync.uploadFile(path + ".json", process.env.DROPBOX_FOLDER + path.replace("uploads/","") + ".json");
 					});
 				}
 			} catch (e) {}
