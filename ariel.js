@@ -110,8 +110,14 @@ app.get('/config', function(req, res) {
 if (process.env.DASHBOARD !== undefined) {
 	var dashboardAPI = require('./dashboard/api.js');
 	dashboardAPI.api(app)
+
 	app.get("/" + process.env.DASHBOARD + "/", function(req, res) {
-		res.sendFile(path.join(__dirname,"dashboard","index.html"))
+		if(req.url.substr(req.url.length-1) !== '/' && req.url.length > 1){
+			res.redirect(301, req.url + "/")
+		}
+		if(req.url.substr(req.url.length-1) === '/' && req.url.length > 1){
+			res.sendFile(path.join(__dirname,"dashboard","index.html"))
+		}
 	});
 }
 

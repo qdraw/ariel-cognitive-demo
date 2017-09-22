@@ -16,33 +16,42 @@
 			}
 		</style>
 
-		<!-- <link rel="stylesheet" href="css/bootstrap.min.css">
-		<link rel="stylesheet" href="css/dropzone_basic.css">
-		<link rel="stylesheet" href="css/style.css"> -->
-		<link rel="icon" type="image/png" href="img/favicon.png" />
+		<link rel="icon" type="image/png" href="../img/favicon.png" />
 
 		<meta name="dcterms.rightsHolder" content="&copy; Qdraw" />
 		<meta name="dcterms.rights" content="Design" />
 		<meta name="dcterms.dateCopyrighted" content="2017">
 		<meta name="author" content="Dion" />
+		<link rel="stylesheet" href="../css/bootstrap.min.css">
 
-		<meta name="csrf-token" content="">
+		<link rel="stylesheet" href="../css/style.css">
+
 	</head>
 <body>
-	<script src="../js/d3.v4.min.js"></script>
-	<h1>Emotion</h1>
-	<div id="emotion"></div>
-	<h1>Gender</h1>
-	<div id="gender"></div>
 
-	<h1>Age</h1>
-	<div id="age"></div>
+	<div id="header">
+		<img src="../img/logo.gif" alt="Colours logo" height="40">
+	</div>
 
+
+
+
+	<div class="container">
+	  	<div class="item">
+			<h1>Emotion <noscript>ENABLE JAVASCRIPT </noscript></h1>
+			<div id="emotion"></div>
+		</div>
+	  	<div class="item">
+			<h1>Gender</h1>
+			<div id="gender"></div>
+		</div>
+		<div class="item100p">
+			<h1>Age</h1>
+			<div id="age"></div>
+		</div>
+	</div>
 
 	<script type="text/javascript">
-
-	// var dataset = {"emotion":[{"label":"anger","value":0},{"label":"fear","value":0},{"label":"happiness","value":78},{"label":"neutral","value":9},{"label":"sadness","value":0},{"label":"surprise","value":0}],"gender":[{"label":"male","value":72},{"label":"female","value":15}]}
-
 	function loadJSON(path, success, error)	{
 		var xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function()
@@ -77,7 +86,7 @@
 		// Think back to 5th grade. Radius is 1/2 of the diameter. What is the limiting factor on the diameter? Width or height, whichever is smaller
 		radius = Math.min(width, height) / 2;
 		var color = d3.scaleOrdinal()
-			.range(["#2C93E8","#838690","#F56C4E"]);
+			.range(["#21DA46","#16BF84","#0BA7BD","#089ED3","#008BFF"]);
 		var pie = d3.pie()
 			.value(function(d) { return d.value; })(data);
 
@@ -91,6 +100,8 @@
 
 		var svg = d3.select(element) //#pie
 			.append("svg")
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox", "0 0 " + width + " " + height)
 			.attr("width", width)
 			.attr("height", height)
 			.append("g")
@@ -123,9 +134,9 @@
 
 	function barChart(data,element) {
 		// set the dimensions and margins of the graph
-		var margin = {top: 20, right: 20, bottom: 30, left: 40},
-		width = 960 - margin.left - margin.right,
-		height = 500 - margin.top - margin.bottom;
+		var margin = {top: 20, right: 20, bottom: 40, left: 40},
+		width = 800 - margin.left - margin.right,
+		height = 300 - margin.top - margin.bottom;
 
 		// set the ranges
 		var x = d3.scaleBand()
@@ -138,8 +149,14 @@
 		// append a 'group' element to 'svg'
 		// moves the 'group' element to the top left margin
 		var svg = d3.select(element).append("svg")
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox", "0 0 " + width + " " + height)
+
 			.attr("width", width + margin.left + margin.right)
+			.attr("class","bar")
 			.attr("height", height + margin.top + margin.bottom)
+			.attr("fill", "#008BFF")
+
 			.append("g")
 			.attr("transform",
 			"translate(" + margin.left + "," + margin.top + ")");
@@ -161,60 +178,19 @@
 		// add the x Axis
 		svg.append("g")
 			.attr("transform", "translate(0," + height + ")")
+			.attr("stroke", "white")
 			.call(d3.axisBottom(x));
 
 		// add the y Axis
 		svg.append("g")
+			.attr("stroke", "white")
 			.call(d3.axisLeft(y));
 	}
 
 
 	</script>
-<!--
-	<script type="text/javascript">
-	var data = [10, 20, 100];
-	var dataset = {"emotion":[{"label":"anger","value":0},{"label":"fear","value":0},{"label":"happiness","value":78},{"label":"neutral","value":9},{"label":"sadness","value":0},{"label":"surprise","value":0}],"gender":[{"label":"male","value":72},{"label":"female","value":15}]}
+	<script src="../js/d3.v4.min.js"></script>
 
-
-	var width = 960,
-	    height = 500,
-	    radius = Math.min(width, height) / 2;
-
-	var color = d3.scaleOrdinal()
-	    .range(["#98abc5", "#8a89a6", "#7b6888"]);
-
-	var arc = d3.arc()
-	    .outerRadius(radius - 10)
-	    .innerRadius(0);
-
-	var labelArc = d3.arc()
-	    .outerRadius(radius - 40)
-	    .innerRadius(radius - 40);
-
-	var pie = d3.pie()
-	    .sort(null)
-	    .value(function(d) { return d; });
-
-	var svg = d3.select("body").append("svg")
-	    .attr("width", width)
-	    .attr("height", height)
-	  .append("g")
-	    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-	  var g = svg.selectAll(".arc")
-	      .data(pie(dataset.emotion))
-	    .enter().append("g")
-	      .attr("class", "arc");
-
-	//   g.append("path")
-	//       .attr("d", arc)
-	//       .style("fill", function(d) { return color(d.data); });
-
-	  g.append("text")
-	      .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
-	      .attr("dy", ".35em")
-	    //   .text(function(d) { return d.data; });
-     </script> -->
 
   </body>
 </html>
