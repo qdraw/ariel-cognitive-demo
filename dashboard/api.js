@@ -71,6 +71,90 @@ function api(app) {
 					"value": 0,
 					"spec": "70-80"
 				}
+			],
+			"eyeMakeup": [
+				{
+					"label": "No eye makeup",
+					"value": 0
+				},
+				{
+					"label": "Eye makeup",
+					"value": 1
+				}
+			],
+			"lipMakeup": [
+				{
+					"label": "No lib makeup",
+					"value": 0
+				},
+				{
+					"label": "lib makeup",
+					"value": 1
+				}
+			],
+			"glasses": [
+				{
+					"label": "ReadingGlasses",
+					"value": 0
+				},
+				{
+					"label": "NoGlasses",
+					"value": 0
+				},
+				{
+					"label": "SwimmingGoggles",
+					"value": 0
+				},
+				{
+					"label": "Sunglasses",
+					"value": 0
+				}
+			],
+			"moustache": [
+				{
+					"label": "No moustache",
+					"value": 0
+				},
+				{
+					"label": "moustache",
+					"value": 0
+				}
+			],
+			"beard": [
+				{
+					"label": "No beard",
+					"value": 0
+				},
+				{
+					"label": "beard",
+					"value": 0
+				}
+			],
+			"hairColor": [
+				{
+					"label": "brown",
+					"value": 0
+				},
+				{
+					"label": "blond",
+					"value": 0
+				},
+				{
+					"label": "black",
+					"value": 0
+				},
+				{
+					"label": "other",
+					"value": 0
+				},
+				{
+					"label": "gray",
+					"value": 0
+				},
+				{
+					"label": "red",
+					"value": 0
+				}
 			]
 		}
 
@@ -102,6 +186,30 @@ function merge(tmpdata,apiDATA) {
 
 	Object.keys(apiDATA.age).forEach(function(key) {
 		apiDATA.age[key].value += tmpdata.age[key].value
+	});
+
+	Object.keys(apiDATA.lipMakeup).forEach(function(key) {
+		apiDATA.lipMakeup[key].value += tmpdata.lipMakeup[key].value
+	});
+
+	Object.keys(apiDATA.eyeMakeup).forEach(function(key) {
+		apiDATA.eyeMakeup[key].value += tmpdata.eyeMakeup[key].value
+	});
+
+	Object.keys(apiDATA.glasses).forEach(function(key) {
+		apiDATA.glasses[key].value += tmpdata.glasses[key].value
+	});
+
+	Object.keys(apiDATA.moustache).forEach(function(key) {
+		apiDATA.moustache[key].value += tmpdata.moustache[key].value
+	});
+
+	Object.keys(apiDATA.beard).forEach(function(key) {
+		apiDATA.beard[key].value += tmpdata.beard[key].value
+	});
+
+	Object.keys(apiDATA.hairColor).forEach(function(key) {
+		apiDATA.hairColor[key].value += tmpdata.hairColor[key].value
 	});
 
 	return apiDATA
@@ -180,7 +288,93 @@ function returnval(response) {
 				"value": 0,
 				"spec": "70-80"
 			}
+		],
+		"eyeMakeup": [
+			{
+				"label": "No eye makeup",
+				"value": 0
+			},
+			{
+				"label": "Eye makeup",
+				"value": 1
+			}
+		],
+		"lipMakeup": [
+			{
+				"label": "No lib makeup",
+				"value": 0
+			},
+			{
+				"label": "lib makeup",
+				"value": 0
+			}
+		],
+		"glasses": [
+			{
+				"label": "ReadingGlasses",
+				"value": 0
+			},
+			{
+				"label": "NoGlasses",
+				"value": 0
+			},
+			{
+				"label": "SwimmingGoggles",
+				"value": 0
+			},
+			{
+				"label": "Sunglasses",
+				"value": 0
+			}
+		],
+		"moustache": [
+			{
+				"label": "No moustache",
+				"value": 0
+			},
+			{
+				"label": "moustache",
+				"value": 0
+			}
+		],
+		"beard": [
+			{
+				"label": "No beard",
+				"value": 0
+			},
+			{
+				"label": "beard",
+				"value": 0
+			}
+		],
+		"hairColor": [
+			{
+				"label": "brown",
+				"value": 0
+			},
+			{
+				"label": "blond",
+				"value": 0
+			},
+			{
+				"label": "black",
+				"value": 0
+			},
+			{
+				"label": "other",
+				"value": 0
+			},
+			{
+				"label": "gray",
+				"value": 0
+			},
+			{
+				"label": "red",
+				"value": 0
+			}
 		]
+
+
 
 	}
 
@@ -262,6 +456,70 @@ function returnval(response) {
 			data.age[3].value++
 		}
 
+		// eye Makeup
+		if (response[i].faceAttributes.makeup.eyeMakeup !== undefined) {
+			if (response[i].faceAttributes.makeup.eyeMakeup) {
+				data.eyeMakeup[0].value++
+			}
+			if (!response[i].faceAttributes.makeup.eyeMakeup) {
+				data.eyeMakeup[1].value++
+			}
+		}
+
+		// lipMakeup
+		if (response[i].faceAttributes.makeup.lipMakeup !== undefined) {
+			if (response[i].faceAttributes.makeup.lipMakeup) {
+				data.lipMakeup[0].value++
+			}
+			if (!response[i].faceAttributes.makeup.lipMakeup) {
+				data.lipMakeup[1].value++
+			}
+		}
+
+		// glasses
+		if (response[i].faceAttributes.glasses !== undefined) {
+
+			// ReadingGlasses
+			// NoGlasses
+			// SwimmingGoggles
+			// Sunglasses
+
+			if (response[i].faceAttributes.glasses === "ReadingGlasses") {
+				data.glasses[0].value++
+			}
+			if (response[i].faceAttributes.glasses === "NoGlasses") {
+				data.glasses[1].value++
+			}
+			if (response[i].faceAttributes.glasses === "SwimmingGoggles") {
+				data.glasses[2].value++
+			}
+			if (response[i].faceAttributes.glasses === "Sunglasses") {
+				data.glasses[3].value++
+			}
+
+		}
+
+		// moustache
+		if (response[i].faceAttributes.facialHair.moustache !== undefined) {
+			if (response[i].faceAttributes.facialHair.moustache < 0.5) {
+				data.moustache[0].value++
+			}
+			if (response[i].faceAttributes.facialHair.moustache >= 0.5) {
+				data.moustache[1].value++
+			}
+		}
+
+		// beard
+		if (response[i].faceAttributes.facialHair.beard !== undefined) {
+			if (response[i].faceAttributes.facialHair.beard < 0.5) {
+				data.beard[0].value++
+			}
+			if (response[i].faceAttributes.facialHair.beard >= 0.5) {
+				data.beard[1].value++
+			}
+		}
+
+
 		// HAIR
 		var hairType = [];
 		var hairScore = [];
@@ -272,6 +530,33 @@ function returnval(response) {
 		}
 		var index = findIndexOfGreatest(hairScore);
 		var hair = hairType[index]
+		console.log(hair);
+
+		// "label": "brown",
+		// "label": "blond",
+		// "label": "black",
+		// "label": "other",
+		// "label": "gray",
+		// "label": "red",
+
+		if (hair === "brown") {
+			data.hairColor[0].value++
+		}
+		if (hair === "blond") {
+			data.hairColor[1].value++
+		}
+		if (hair === "black") {
+			data.hairColor[2].value++
+		}
+		if (hair === "other") {
+			data.hairColor[3].value++
+		}
+		if (hair === "gray") {
+			data.hairColor[4].value++
+		}
+		if (hair === "red") {
+			data.hairColor[5].value++
+		}
 
 	}
 	// console.log(data);

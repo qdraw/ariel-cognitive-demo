@@ -49,6 +49,27 @@
 			<h1>Age</h1>
 			<div id="age"></div>
 		</div>
+
+		<div class="item">
+			<h1>lipMakeup</h1>
+			<div id="lipMakeup"></div>
+		</div>
+
+		<div class="item">
+			<h1>beard</h1>
+			<div id="beard"></div>
+		</div>
+
+		<div class="item">
+			<h1>glasses</h1>
+			<div id="glasses"></div>
+		</div>
+		<div class="item">
+			<h1>hairColor</h1>
+			<div id="hairColor"></div>
+		</div>
+
+
 	</div>
 	<script src="../js/d3.v4.min.js"></script>
 
@@ -82,7 +103,10 @@
 				 piChart(data.emotion,"#emotion");
 				 piChart(data.gender,"#gender");
 				 barChart(data.age,"#age")
-
+				 piChart(data.lipMakeup,"#lipMakeup")
+				 piChart(data.beard,"#beard")
+				 piChart(data.glasses,"#glasses")
+				 piChart(data.hairColor,"#hairColor")
 			 },
 			 function(xhr) { console.error(xhr); }
 	)
@@ -193,7 +217,6 @@
 			.attr("stroke", "white")
 			.call(d3.axisLeft(y));
 	}
-
 
 	</script>
 
