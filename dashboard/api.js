@@ -498,9 +498,6 @@ function returnval(response) {
 		data.averageage.value += response[i].faceAttributes.age
 		data.averageage.count++;
 
-		console.log("data.averageage.value");
-		console.log(data.averageage.value);
-
 		// eye Makeup
 		if (response[i].faceAttributes.makeup.eyeMakeup !== undefined) {
 			if (response[i].faceAttributes.makeup.eyeMakeup) {
