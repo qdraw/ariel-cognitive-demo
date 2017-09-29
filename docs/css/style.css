@@ -51,7 +51,7 @@
 }
 
 #welcome {
-	margin: 5px;
+	margin: 15px;
 	margin-top: 70px;
 	margin-bottom: 30px;
 }
@@ -59,7 +59,7 @@
 .footer,
 #emotion,
 #info {
-	margin: 5px;
+	margin: 15px;
 	color: white;
 	margin-bottom: 30px;
 }
