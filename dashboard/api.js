@@ -37,11 +37,11 @@ function api(app) {
 			],
 			"gender": [
 				{
-					"label": "male",
+					"label": "man",
 					"value": 0
 				},
 				{
-					"label": "female",
+					"label": "vrouw",
 					"value": 0
 				}
 			],
@@ -233,7 +233,7 @@ function merge(tmpdata,apiDATA) {
 
 	apiDATA.averageage.count += tmpdata.averageage.count
 	apiDATA.averageage.value += tmpdata.averageage.value
-	
+
 	return apiDATA
 }
 

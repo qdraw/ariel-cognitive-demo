@@ -116,3 +116,13 @@ body {
 .container .item div {
 	height: 33%
 }
+
+svg .vrouw path,
+svg .female path{
+	fill: pink!important
+}
+
+svg .man path,
+svg .male path{
+	fill: #008BFF!important
+}

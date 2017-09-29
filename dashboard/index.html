@@ -39,14 +39,14 @@
 	<div class="container">
 		<div class="item100p">
 			<h1> Live crowd data tracker</h1>
-			<h2> add your data to the crowd demo.colours.ai
+			<h2> voeg zelf data toe via: <b>demo.colours.ai</b>
 				<hr />
 		</div>
 
 
 		<div class="item">
 			<div class="fifty">
-				<h2>Gender</h1>
+				<h2>Geslacht</h1>
 				<div id="gender"></div>
 			</div>
 			<div>
@@ -57,45 +57,45 @@
 
 	  	<div class="item">
 			<div>
-				<h2>average age</h2>
+				<h2>gemiddelde leeftijd</h2>
 				<div class="int" id="averageage">99</div>
 			</div>
 			<div>
-				<h2>beard</h2>
+				<h2>baard</h2>
 				<div class="int" id="beard">99</div>
 			</div>
 			<div>
-				<h2>swimming goggles</h2>
+				<h2>zwembrillen</h2>
 				<div class="int" id="SwimmingGoggles">99</div>
 			</div>
 		</div>
 
 		<div class="item">
 			<div>
-				<h2>lib makeup</h2>
+				<h2>lippenstift</h2>
 				<div class="int" id="lipMakeup">99</div>
 			</div>
 			<div>
-				<h2>sideburns</h2>
+				<h2>bakkebaarden</h2>
 				<div class="int" id="sideburns">99</div>
 			</div>
 			<div>
-				<h2>brown hair</h2>
+				<h2>bruin haar</h2>
 				<div class="int" id="brownhair">99</div>
 			</div>
 		</div>
 
 		<div class="item">
 			<div>
-				<h2>reading glasses</h2>
+				<h2>leesbril</h2>
 				<div class="int" id="ReadingGlasses">99</div>
 			</div>
 			<div>
-				<h2>moustaches</h2>
+				<h2>snor</h2>
 				<div class="int" id="moustache">99</div>
 			</div>
 			<div>
-				<h2>eye makeup</h2>
+				<h2>oog makeup</h2>
 				<div class="int" id="eyeMakeup">99</div>
 			</div>
 
@@ -158,7 +158,7 @@
 
 					 piChart(data.emotion,"#emotion");
 					 piChart(data.gender,"#gender");
-					 document.querySelector("#averageage").innerHTML = Math.round(data.averageage.value / data.averageage.count) + "<sup> yr</sup>"
+					 document.querySelector("#averageage").innerHTML = Math.round(data.averageage.value / data.averageage.count) + "<sup> jr.</sup>"
 					 document.querySelector("#beard").innerHTML = data.beard[1].value
 					 document.querySelector("#SwimmingGoggles").innerHTML = data.glasses[2].value
 					 document.querySelector("#ReadingGlasses").innerHTML = data.glasses[0].value
@@ -207,7 +207,7 @@
 		var g = svg.selectAll("arc")
 			.data(pie)
 			.enter().append("g")
-			.attr("class", "arc");
+			.attr("class", function(d) { return "arc " + d.data.label;});
 
 		g.append("path")
 			.attr("d", arc)
