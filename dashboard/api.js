@@ -72,6 +72,11 @@ function api(app) {
 					"spec": "70-80"
 				}
 			],
+			"averageage": {
+				"value": 0,
+				"count": 0
+			},
+
 			"eyeMakeup": [
 				{
 					"label": "No eye makeup",
@@ -226,6 +231,9 @@ function merge(tmpdata,apiDATA) {
 		apiDATA.sideburns[key].value += tmpdata.sideburns[key].value
 	});
 
+	apiDATA.averageage.count += tmpdata.averageage.count
+	apiDATA.averageage.value += tmpdata.averageage.value
+	
 	return apiDATA
 }
 
@@ -303,6 +311,10 @@ function returnval(response) {
 				"spec": "70-80"
 			}
 		],
+		"averageage": {
+			"value": 0,
+			"count": 0
+		},
 		"eyeMakeup": [
 			{
 				"label": "No eye makeup",
@@ -479,6 +491,15 @@ function returnval(response) {
 		if (response[i].faceAttributes.age >= 70 && response[i].faceAttributes.age < 80) {  //"70-80"
 			data.age[3].value++
 		}
+
+		// response.length
+
+		// averageage
+		data.averageage.value += response[i].faceAttributes.age
+		data.averageage.count++;
+
+		console.log("data.averageage.value");
+		console.log(data.averageage.value);
 
 		// eye Makeup
 		if (response[i].faceAttributes.makeup.eyeMakeup !== undefined) {

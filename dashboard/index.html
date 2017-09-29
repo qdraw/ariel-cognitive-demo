@@ -158,7 +158,7 @@
 
 					 piChart(data.emotion,"#emotion");
 					 piChart(data.gender,"#gender");
-					 document.querySelector("#averageage").innerHTML = "NaN"
+					 document.querySelector("#averageage").innerHTML = Math.round(data.averageage.value / data.averageage.count) + "<sup> yr</sup>"
 					 document.querySelector("#beard").innerHTML = data.beard[1].value
 					 document.querySelector("#SwimmingGoggles").innerHTML = data.glasses[2].value
 					 document.querySelector("#ReadingGlasses").innerHTML = data.glasses[0].value
@@ -224,7 +224,8 @@
 				return d.data.label;
 				}
 			})
-			.style("fill", "#fff");
+			.style("fill", "#fff")
+			.style("font-size", "20px");
 	}
 
 

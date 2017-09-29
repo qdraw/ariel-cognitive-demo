@@ -43,6 +43,12 @@ h1,h2,h3{
 	line-height: 1;
 	color: white;
 }
+
+.int sup {
+	font-size: 50%;
+	top:-.7em
+}
+
 ul {
 	color: white;
 }
