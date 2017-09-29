@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 		}
 		document.querySelector("#loader").style.display = "none";
 		document.querySelector("#welcome").innerHTML = "Add your photo here";
-		document.querySelector("#info").innerHTML = "Just by analysing this picture we can say a lot about you. Test your emotion, check how old you are. We don't save the images";
+		document.querySelector("#info").innerHTML = "Just by analyzing your picture we can tell a lot about you. For instance; testing your emotions and guessing how old you are. We will not save the images.";
 
 	}
 
