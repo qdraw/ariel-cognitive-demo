@@ -81,7 +81,16 @@ body {
 .dz-success-mark {
 	transition: display 2s ease-in;
 }
+#upload-widget {
+	margin: 15px;
+	background-color: #008BFF;
+	border-radius: 15px;
+	height: 100px;
+}
 
+#upload-widget .dz-default.dz-message {
+	margin-top: 28px;
+}
 #loader {
 	position: absolute;
 	bottom: 0px;
