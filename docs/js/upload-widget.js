@@ -562,7 +562,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 			var maxEmojiList = maxEmoji(response);
 
 			for (var i = 0; i < response.length; i++) {
-				document.querySelector("#emotion ul").innerHTML += "<li style='list-style-type:none;'><h3 id='person_"+ response[i].faceId + "'> Person (" + Number(i+1) + ") </h3></li>"
+				document.querySelector("#emotion ul").innerHTML += "<li style='list-style-type:none;'><h3 id='person_"+ response[i].faceId + "'> Persoon (" + Number(i+1) + ") </h3></li>"
 
 				document.querySelector("#emotion ul").innerHTML += "<li> leeftijd: " +response[i].faceAttributes.age + "</li>"
 
