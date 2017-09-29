@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 		});
 		uploader.on('addedfile', function( file){
 
-			document.querySelector("#welcome").innerHTML = "We are sending it to us";
+			document.querySelector("#welcome").innerHTML = "We are downloading your photo";
 			document.querySelector("#info").innerHTML = "";
 			document.querySelector("#upload-widget").style.backgroundColor = "rgb(28,38,50)";
 
