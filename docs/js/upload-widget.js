@@ -476,6 +476,11 @@ document.addEventListener("DOMContentLoaded", function(event){
 		}
 		if (response.length === 1) {
 			emoji = maxEmoji(response)[0]
+
+			if (emoji === "anger") {
+				emoji = "angry"
+			}
+
 			if (emoji === "happiness") {
 				emoji = "happy"
 			}
@@ -486,6 +491,10 @@ document.addEventListener("DOMContentLoaded", function(event){
 			if (emoji === "happiness") {
 				emoji = "happy"
 			}
+			if (emoji === "anger") {
+				emoji = "angry"
+			}
+
 			document.querySelector("#welcome").innerHTML = "You are " +  emoji;
 		}
 
