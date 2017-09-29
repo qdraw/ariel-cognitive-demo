@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", function(event){
 
 	function computersaysno() {
 		document.querySelector("#welcome").innerHTML = "The computer says wait";
-		document.querySelector("#info").innerHTML = "Please wait a few seconds, I'm now booting my Raspberry Pi. When this is done you can test your emotion and check how old you are. ";
+		// document.querySelector("#info").innerHTML = "Please wait a few seconds, I'm now booting my Raspberry Pi. When this is done you can test your emotion and check how old you are. ";
+		document.querySelector("#info").innerHTML = "Even geduld ik ben mijn Raspberry pi aan het opstarten. Wanneer dit zo ver is kun je met de Face API je gezicht analyseren."
 		loaderHelper(1234,"img/loader1.gif");
 		loaderHelper(2000,"img/loader2.gif");
 		loaderHelper(6000,"img/loader3.gif");
@@ -94,9 +95,11 @@ document.addEventListener("DOMContentLoaded", function(event){
 			document.querySelector("#upload-widget").style.display = "block";
 		}
 		document.querySelector("#loader").style.display = "none";
-		document.querySelector("#welcome").innerHTML = "Add your photo here";
-		document.querySelector("#info").innerHTML = "Just by analyzing your picture we can tell a lot about you. For instance; testing your emotions and guessing how old you are. We will not save the images.";
+		document.querySelector("#welcome").innerHTML = "Live crowd data tracker ";
 
+		// document.querySelector("#welcome").innerHTML = "Add your photo here";
+		// document.querySelector("#info").innerHTML = "Just by analyzing your picture we can tell a lot about you. For instance; testing your emotions and guessing how old you are. We will not save the images.";
+		document.querySelector("#info").innerHTML = "Door je foto te analyseren, kunnen we veel over je vertellen. Bijvoorbeeld raden hoe oud je bent. De foto's worden niet opgeslagen."
 	}
 
 	function uploadWidget() {
@@ -107,7 +110,9 @@ document.addEventListener("DOMContentLoaded", function(event){
 			maxFiles: 1,
 			thumbnailWidth: 1000,
 			thumbnailHeight: null,
-			dictDefaultMessage: 'Click or drag an image to start',
+			// dictDefaultMessage: 'Click or drag an image to start',
+			dictDefaultMessage: 'Voeg hier je foto toe',
+
 			headers: {
 				'x-csrf-token': document.querySelectorAll('meta[name=csrf-token]')[0].getAttributeNode('content').value,
 			},
@@ -121,7 +126,8 @@ document.addEventListener("DOMContentLoaded", function(event){
 		});
 		uploader.on('addedfile', function( file){
 
-			document.querySelector("#welcome").innerHTML = "We are downloading your photo";
+			// document.querySelector("#welcome").innerHTML = "We are downloading your photo";
+			document.querySelector("#welcome").innerHTML = "We downloaden je foto";
 			document.querySelector("#info").innerHTML = "";
 			document.querySelector("#upload-widget").style.backgroundColor = "rgb(28,38,50)";
 
@@ -157,7 +163,8 @@ document.addEventListener("DOMContentLoaded", function(event){
 				initD3();
 			});
 
-			document.querySelector("#welcome").innerHTML = "Get ready!";
+			// document.querySelector("#welcome").innerHTML = "Get ready!";
+			document.querySelector("#welcome").innerHTML = "Nog even geduld!";
 
 		});
 	}
@@ -478,24 +485,73 @@ document.addEventListener("DOMContentLoaded", function(event){
 			emoji = maxEmoji(response)[0]
 
 			if (emoji === "anger") {
-				emoji = "angry"
+				// emoji = "angry"
+				emoji = "boos"
+			}
+			if (emoji === "neutral") {
+				emoji = "neutraal"
+			}
+			if (emoji === "contempt") {
+				emoji = "minachtig"
+			}
+			if (emoji === "disgust") {
+				emoji = "geërgerd"
+			}
+
+			if (emoji === "fear") {
+				emoji = "angtig"
 			}
 
 			if (emoji === "happiness") {
-				emoji = "happy"
+				// emoji = "happy"
+				emoji = "blij"
 			}
-			document.querySelector("#welcome").innerHTML = "Your are " + Math.round(response[0].faceAttributes.age) + " and " + emoji;
+
+			if (emoji === "sadness") {
+				emoji = "verdrietig"
+			}
+
+			if (emoji === "surprise") {
+				emoji = "verrast"
+			}
+			document.querySelector("#welcome").innerHTML = "Je bent " + Math.round(response[0].faceAttributes.age) + " jaar en " + emoji;
+
+			// document.querySelector("#welcome").innerHTML = "Your are " + Math.round(response[0].faceAttributes.age) + " and " + emoji;
 		}
 		if (response.length >= 2) {
 			emoji = mode(maxEmoji(response))
-			if (emoji === "happiness") {
-				emoji = "happy"
-			}
 			if (emoji === "anger") {
-				emoji = "angry"
+				// emoji = "angry"
+				emoji = "boos"
+			}
+			if (emoji === "neutral") {
+				emoji = "neutraal"
+			}
+			if (emoji === "contempt") {
+				emoji = "minachtig"
+			}
+			if (emoji === "disgust") {
+				emoji = "geërgerd"
 			}
 
-			document.querySelector("#welcome").innerHTML = "You are " +  emoji;
+			if (emoji === "fear") {
+				emoji = "angtig"
+			}
+
+			if (emoji === "happiness") {
+				// emoji = "happy"
+				emoji = "blij"
+			}
+
+			if (emoji === "sadness") {
+				emoji = "verdrietig"
+			}
+
+			if (emoji === "surprise") {
+				emoji = "verrast"
+			}
+
+			document.querySelector("#welcome").innerHTML = "Jullie zijn " +  emoji;
 		}
 
 	}
@@ -508,44 +564,50 @@ document.addEventListener("DOMContentLoaded", function(event){
 			for (var i = 0; i < response.length; i++) {
 				document.querySelector("#emotion ul").innerHTML += "<li style='list-style-type:none;'><h3 id='person_"+ response[i].faceId + "'> Person (" + Number(i+1) + ") </h3></li>"
 
-				document.querySelector("#emotion ul").innerHTML += "<li> age: " +response[i].faceAttributes.age + "</li>"
-				document.querySelector("#emotion ul").innerHTML += "<li> gender: " +response[i].faceAttributes.gender + "</li>"
+				document.querySelector("#emotion ul").innerHTML += "<li> leeftijd: " +response[i].faceAttributes.age + "</li>"
 
-				document.querySelector("#emotion ul").innerHTML += "<li> glasses: " +response[i].faceAttributes.glasses + "</li>"
+				if (response[i].faceAttributes.gender === "male") {
+					document.querySelector("#emotion ul").innerHTML += "<li> geslacht: man</li>"
+				}
+				if (response[i].faceAttributes.gender === "female") {
+					document.querySelector("#emotion ul").innerHTML += "<li> geslacht: vrouw</li>"
+				}
 
-				document.querySelector("#emotion ul").innerHTML += "<li> emotion: " + maxEmojiList[i] +"</li>";
+				document.querySelector("#emotion ul").innerHTML += "<li> bril: " +response[i].faceAttributes.glasses + "</li>"
 
-				var emotionContent = "<li> emotion scores:" + "<br />";
+				document.querySelector("#emotion ul").innerHTML += "<li> emotie: " + maxEmojiList[i] +"</li>";
+
+				var emotionContent = "<li> emotie scores:" + "<br />";
 
 				if (response[i].faceAttributes.emotion.anger >= 0.25) {
-					emotionContent += " anger: " + response[i].faceAttributes.emotion.anger;
+					emotionContent += " boosheid: " + response[i].faceAttributes.emotion.anger;
 				}
 				if (response[i].faceAttributes.emotion.contempt >= 0.25) {
-					emotionContent += " contempt: "  + response[i].faceAttributes.emotion.contempt;
+					emotionContent += " minachting: "  + response[i].faceAttributes.emotion.contempt;
 				}
 				if (response[i].faceAttributes.emotion.disgust >= 0.25) {
-					emotionContent += " disgust: " +  response[i].faceAttributes.emotion.disgust;
+					emotionContent += " ergernis: " +  response[i].faceAttributes.emotion.disgust;
 				}
 				if (response[i].faceAttributes.emotion.fear >= 0.25) {
-					emotionContent += " fear: "  + response[i].faceAttributes.emotion.fear;
+					emotionContent += " angst: "  + response[i].faceAttributes.emotion.fear;
 				}
 				if (response[i].faceAttributes.emotion.happiness >= 0.25) {
-					emotionContent += " happiness: " +  response[i].faceAttributes.emotion.happiness;
+					emotionContent += " blijheid: " +  response[i].faceAttributes.emotion.happiness;
 				}
 
-				emotionContent += " neutral: " +  response[i].faceAttributes.emotion.neutral;
+				emotionContent += " neutraal: " +  response[i].faceAttributes.emotion.neutral;
 
 				if (response[i].faceAttributes.emotion.sadness >= 0.25) {
-					emotionContent += " sadness: "  + response[i].faceAttributes.emotion.sadness;
+					emotionContent += " verdrietigheid: "  + response[i].faceAttributes.emotion.sadness;
 				}
 				if (response[i].faceAttributes.emotion.surprise >= 0.25) {
-					emotionContent += " surprise: "  + response[i].faceAttributes.emotion.surprise;
+					emotionContent += " verrast: "  + response[i].faceAttributes.emotion.surprise;
 				}
 				emotionContent += "</li>";
 
 				document.querySelector("#emotion ul").innerHTML += emotionContent;
 
-				document.querySelector("#emotion ul").innerHTML += "<li> makeup: eyeMakeup: " + response[i].faceAttributes.makeup.eyeMakeup + " lipMakeup: " + response[i].faceAttributes.makeup.lipMakeup + "</li>"
+				document.querySelector("#emotion ul").innerHTML += "<li> makeup: oog makeup: " + response[i].faceAttributes.makeup.eyeMakeup + " lip makeup: " + response[i].faceAttributes.makeup.lipMakeup + "</li>"
 
 				if (response[i].faceAttributes.accessories !== undefined) {
 					document.querySelector("#emotion ul").innerHTML += "<li> accessories: " +JSON.stringify(response[i].faceAttributes.accessories) + "</li>"
@@ -556,7 +618,7 @@ document.addEventListener("DOMContentLoaded", function(event){
 				if (response[i].faceAttributes.occlusion !== undefined) {
 					document.querySelector("#emotion ul").innerHTML += "<li> foreheadOccluded: " +  response[i].faceAttributes.occlusion.foreheadOccluded + " eyeOccluded: " + response[i].faceAttributes.occlusion.eyeOccluded + " mouthOccluded: " + response[i].faceAttributes.occlusion.mouthOccluded +"</li>";
 				}
-				document.querySelector("#emotion ul").innerHTML += "<li> moustache: " +  response[i].faceAttributes.facialHair.moustache +   " beard: " +  response[i].faceAttributes.facialHair.beard +   " sideburns: " +  response[i].faceAttributes.facialHair.sideburns + "</li>";
+				document.querySelector("#emotion ul").innerHTML += "<li> snor: " +  response[i].faceAttributes.facialHair.moustache +   " baard: " +  response[i].faceAttributes.facialHair.beard +   " bakkebaarden: " +  response[i].faceAttributes.facialHair.sideburns + "</li>";
 
 			}
 		}
