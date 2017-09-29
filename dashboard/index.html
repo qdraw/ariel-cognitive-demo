@@ -24,50 +24,88 @@
 		<meta name="author" content="Dion" />
 		<link rel="stylesheet" href="../css/bootstrap.min.css">
 
-		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/dashboard_style.css">
 
 	</head>
 <body>
 
-	<div id="header">
-		<img src="../img/logo.gif" alt="Colours logo" height="40">
-	</div>
+	<!-- <div id="header">
+		<img src="../img/logo-crowd-meter.png" alt="Colours logo" height="40">
+	</div> -->
 
 
 
 
 	<div class="container">
-	  	<div class="item">
-			<h1>Emotion <noscript>ENABLE JAVASCRIPT </noscript></h1>
-			<div id="emotion"></div>
-		</div>
-	  	<div class="item">
-			<h1>Gender</h1>
-			<div id="gender"></div>
-		</div>
 		<div class="item100p">
-			<h1>Age</h1>
-			<div id="age"></div>
+			<h1> Live crowd data tracker</h1>
+			<h2> add your data to the crowd demo.colours.ai
+				<hr />
+		</div>
+
+
+		<div class="item">
+			<div class="fifty">
+				<h2>Gender</h1>
+				<div id="gender"></div>
+			</div>
+			<div>
+				<h2>Mood</h1>
+				<div id="emotion"></div>
+			</div>
+		</div>
+
+	  	<div class="item">
+			<div>
+				<h2>average age</h2>
+				<div class="int" id="averageage">99</div>
+			</div>
+			<div>
+				<h2>beard</h2>
+				<div class="int" id="beard">99</div>
+			</div>
+			<div>
+				<h2>swimming goggles</h2>
+				<div class="int" id="SwimmingGoggles">99</div>
+			</div>
 		</div>
 
 		<div class="item">
-			<h1>lipMakeup</h1>
-			<div id="lipMakeup"></div>
+			<div>
+				<h2>lib makeup</h2>
+				<div class="int" id="lipMakeup">99</div>
+			</div>
+			<div>
+				<h2>sideburns</h2>
+				<div class="int" id="sideburns">99</div>
+			</div>
+			<div>
+				<h2>brown hair</h2>
+				<div class="int" id="brownhair">99</div>
+			</div>
 		</div>
 
 		<div class="item">
-			<h1>beard</h1>
-			<div id="beard"></div>
+			<div>
+				<h2>reading glasses</h2>
+				<div class="int" id="ReadingGlasses">99</div>
+			</div>
+			<div>
+				<h2>moustaches</h2>
+				<div class="int" id="moustache">99</div>
+			</div>
+			<div>
+				<h2>eye makeup</h2>
+				<div class="int" id="eyeMakeup">99</div>
+			</div>
+
 		</div>
 
-		<div class="item">
-			<h1>glasses</h1>
-			<div id="glasses"></div>
+		<div class="item100p">
+			<hr />
+			<img src="../img/logo-crowd-meter.png" alt="Colours logo" height="40">
 		</div>
-		<div class="item">
-			<h1>hairColor</h1>
-			<div id="hairColor"></div>
-		</div>
+
 
 
 	</div>
@@ -76,7 +114,7 @@
 	<script type="text/javascript">
 
  	setInterval(function(){
-		location.reload()
+		loadDATA()
 	}, 30000);
 
 
@@ -98,26 +136,53 @@
 		xhr.send();
 	}
 
-	loadJSON("data.json",
-			 function(data) {
-				 piChart(data.emotion,"#emotion");
-				 piChart(data.gender,"#gender");
-				 barChart(data.age,"#age")
-				 piChart(data.lipMakeup,"#lipMakeup")
-				 piChart(data.beard,"#beard")
-				 piChart(data.glasses,"#glasses")
-				 piChart(data.hairColor,"#hairColor")
-			 },
-			 function(xhr) { console.error(xhr); }
-	)
+	function loadDATA() {
+		loadJSON("data.json",
+				 function(data) {
+					 document.querySelector("#emotion").innerHTML = "";
+					 document.querySelector("#gender").innerHTML = "";
+					 document.querySelector("#averageage").innerHTML = "";
+					 document.querySelector("#beard").innerHTML = "";
+					 document.querySelector("#SwimmingGoggles").innerHTML = "";
+					 document.querySelector("#ReadingGlasses").innerHTML = "";
+					 document.querySelector("#lipMakeup").innerHTML = "";
+					 document.querySelector("#sideburns").innerHTML = "";
+					 document.querySelector("#moustache").innerHTML = "";
+					 document.querySelector("#eyeMakeup").innerHTML = "";
+					 document.querySelector("#brownhair").innerHTML = "";
+
+
+
+
+
+
+					 piChart(data.emotion,"#emotion");
+					 piChart(data.gender,"#gender");
+					 document.querySelector("#averageage").innerHTML = "NaN"
+					 document.querySelector("#beard").innerHTML = data.beard[1].value
+					 document.querySelector("#SwimmingGoggles").innerHTML = data.glasses[2].value
+					 document.querySelector("#ReadingGlasses").innerHTML = data.glasses[0].value
+					 document.querySelector("#lipMakeup").innerHTML = data.lipMakeup[1].value
+					 document.querySelector("#sideburns").innerHTML = data.sideburns[1].value
+
+					 document.querySelector("#moustache").innerHTML = data.moustache[1].value
+					 document.querySelector("#eyeMakeup").innerHTML = data.eyeMakeup[1].value
+					 document.querySelector("#brownhair").innerHTML = data.hairColor[0].value
+
+				 },
+				 function(xhr) { console.error(xhr); }
+		)
+	}
+	loadDATA()
+
 
 	function piChart(data,element) {
-		var width = 300,
-		height = 300,
+		var width = 250,
+		height = 250,
 		// Think back to 5th grade. Radius is 1/2 of the diameter. What is the limiting factor on the diameter? Width or height, whichever is smaller
 		radius = Math.min(width, height) / 2;
 		var color = d3.scaleOrdinal()
-			.range(["#21DA46","#16BF84","#0BA7BD","#089ED3","#008BFF"]);
+			.range(["#1CCE62","#16BF84","#0BA7BD","#089ED3","#008BFF"]);
 		var pie = d3.pie()
 			.value(function(d) { return d.value; })(data);
 

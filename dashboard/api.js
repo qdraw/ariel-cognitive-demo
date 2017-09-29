@@ -120,6 +120,16 @@ function api(app) {
 					"value": 0
 				}
 			],
+			"sideburns": [
+				{
+					"label": "No sideburns",
+					"value": 0
+				},
+				{
+					"label": "sideburns",
+					"value": 0
+				}
+			],
 			"beard": [
 				{
 					"label": "No beard",
@@ -210,6 +220,10 @@ function merge(tmpdata,apiDATA) {
 
 	Object.keys(apiDATA.hairColor).forEach(function(key) {
 		apiDATA.hairColor[key].value += tmpdata.hairColor[key].value
+	});
+
+	Object.keys(apiDATA.sideburns).forEach(function(key) {
+		apiDATA.sideburns[key].value += tmpdata.sideburns[key].value
 	});
 
 	return apiDATA
@@ -344,6 +358,16 @@ function returnval(response) {
 			},
 			{
 				"label": "beard",
+				"value": 0
+			}
+		],
+		"sideburns": [
+			{
+				"label": "No sideburns",
+				"value": 0
+			},
+			{
+				"label": "sideburns",
 				"value": 0
 			}
 		],
@@ -509,6 +533,16 @@ function returnval(response) {
 			}
 		}
 
+		// sideburns
+		if (response[i].faceAttributes.facialHair.sideburns !== undefined) {
+			if (response[i].faceAttributes.facialHair.sideburns < 0.5) {
+				data.sideburns[0].value++
+			}
+			if (response[i].faceAttributes.facialHair.sideburns >= 0.5) {
+				data.sideburns[1].value++
+			}
+		}
+
 		// beard
 		if (response[i].faceAttributes.facialHair.beard !== undefined) {
 			if (response[i].faceAttributes.facialHair.beard < 0.5) {
@@ -530,7 +564,7 @@ function returnval(response) {
 		}
 		var index = findIndexOfGreatest(hairScore);
 		var hair = hairType[index]
-		console.log(hair);
+		// console.log(hair);
 
 		// "label": "brown",
 		// "label": "blond",
