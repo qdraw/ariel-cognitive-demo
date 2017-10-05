@@ -3,12 +3,13 @@ Dropzone.autoDiscover = false;
 
 document.addEventListener("DOMContentLoaded", function(event){
 
-	try {
-		// Loading alternative config.json file if this one is not there. This is workaround for azure
-		if ( localStorage.getItem("config") === null) getConfig("config.json");
-		if ( localStorage.getItem("config") === "config") getConfig("config");
-	} catch (e) {
+	console.log(window.location.href);
+
+	if (window.location.href.indexOf("azure") >= 0) {
 		getConfig("config")
+	}
+	if (window.location.href.indexOf("azure") === -1) {
+		getConfig("config.json")
 	}
 
 	if (document.querySelectorAll("#upload-widget").length >= 1) {
